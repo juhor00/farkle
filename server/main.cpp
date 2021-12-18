@@ -17,14 +17,9 @@ void *PrintHello(int id) {
 
 int main()
 {
-    vector<thread*> threads;
     for (int i=0; i<THREAD_COUNT; i++){
         cout << "Creating thread " << i << endl;
         thread* t = new thread(PrintHello, i);
-        threads.push_back(t);
-    }
-    for(auto t : threads){
-        t->join();
-        delete t;
+        t->detach();
     }
 }
