@@ -1,5 +1,5 @@
 #include <iostream>
-#include "thread_example.cpp"
+#include "server.h"
 
 using namespace std;
 
@@ -8,7 +8,7 @@ using namespace std;
 int main()
 {
 
-    test();
+    Server();
 
 
     return EXIT_SUCCESS;

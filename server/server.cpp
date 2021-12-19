@@ -55,16 +55,45 @@ Server::Server()
         WSACleanup();
         return;
     }
+    std::cout << "Server started successfully" << std::endl;
+    acceptClients();
 }
 
 Server::~Server()
 {
     // Close sockets
     closesocket(ListenSocket);
-    for(SOCKET& ClientSocket : ClientSockets){
-        closesocket(ClientSocket);
+    for(SOCKET ClientSocket : ClientSockets){
+        removeClient(ClientSocket);
     }
     WSACleanup();
+}
+
+bool Server::addClient(SOCKET &client)
+{
+    if(hasClient(client)){
+        return false;
+    }
+    ClientSockets.insert(client);
+    std::thread t(&handle, std::ref(client));
+    t.detach();
+    return true;
+}
+
+bool Server::removeClient(SOCKET &client)
+{
+    if(hasClient(client)){
+        closesocket(client);
+        ClientSockets.erase(client);
+        return true;
+    }
+    return false;
+
+}
+
+bool Server::hasClient(SOCKET &client)
+{
+    return (std::find(ClientSockets.begin(), ClientSockets.end(), client) != ClientSockets.end());
 }
 
 void Server::acceptClients()
@@ -77,13 +106,13 @@ void Server::acceptClients()
             return;
         } else {
             // New successful connection
-            //auto t = std::shared_ptr<std::thread> (new std::thread(handle, ClientSocket));
-            //t->detach();
+            std::cout << "Added new client " << ClientSocket << std::endl;
+            addClient(ClientSocket);
         }
     }
 }
 
-void Server::handle(SOCKET &client)
+void Server::handle(SOCKET& client)
 {
     char recvbuf[DEFAULT_BUFLEN];
     int recvbuflen = DEFAULT_BUFLEN;
