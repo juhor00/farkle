@@ -23,6 +23,9 @@
 #define DEFAULT_BUFLEN 512
 #define DEFAULT_PORT "27015"
 
+char recvbuf[DEFAULT_BUFLEN];
+int recvbuflen = DEFAULT_BUFLEN;
+
 
 
 class Server
@@ -40,7 +43,9 @@ private:
 
     void stopListen();
     void acceptClients();
-    static void handle(SOCKET& client);
+    void handle(SOCKET& client);
+    bool sendToClient(SOCKET& client, int bytes);
+    bool broadcast(int bytes);
 
     SOCKET ListenSocket = INVALID_SOCKET;
     std::set<SOCKET> ClientSockets;

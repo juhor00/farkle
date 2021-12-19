@@ -75,7 +75,7 @@ bool Server::addClient(SOCKET &client)
         return false;
     }
     ClientSockets.insert(client);
-    std::thread t(&handle, std::ref(client));
+    std::thread t(&Server::handle, this, std::ref(client));
     t.detach();
     return true;
 }
@@ -119,8 +119,6 @@ void Server::acceptClients()
 
 void Server::handle(SOCKET& client)
 {
-    char recvbuf[DEFAULT_BUFLEN];
-    int recvbuflen = DEFAULT_BUFLEN;
 
     while(true){
         std::cout << "Handling client " << client << std::endl;
@@ -136,4 +134,30 @@ void Server::handle(SOCKET& client)
         }
 
     }
+}
+
+bool Server::sendToClient(SOCKET &client, int bytes)
+{
+    if(hasClient(client)){
+        int result = send(client, recvbuf, bytes, 0);
+        if(result == SOCKET_ERROR){
+            std::cerr << "send failed with error: " << WSAGetLastError() << std::endl;
+            removeClient(client);
+            return false;
+        }
+    } else { return false; }
+    std::cout << "Bytes " << bytes << " sent to " << client << std::endl;
+    return true;
+}
+
+bool Server::broadcast(int bytes)
+{
+    bool failed = false;
+    for(SOCKET client : ClientSockets){
+        bool sent = sendToClient(client, bytes);
+        if(!sent){
+            failed = true;
+        }
+    }
+    return !failed;
 }
