@@ -96,6 +96,11 @@ bool Server::hasClient(SOCKET &client)
     return (std::find(ClientSockets.begin(), ClientSockets.end(), client) != ClientSockets.end());
 }
 
+void Server::stopListen()
+{
+    closesocket(ListenSocket);
+}
+
 void Server::acceptClients()
 {
     while(true){

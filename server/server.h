@@ -38,6 +38,7 @@ private:
     bool removeClient(SOCKET& client);
     bool hasClient(SOCKET& client);
 
+    void stopListen();
     void acceptClients();
     static void handle(SOCKET& client);
 
