@@ -4,4 +4,9 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
-        main.cpp
+        main.cpp \
+        server.cpp \
+        thread_example.cpp
+
+HEADERS += \
+    server.h
