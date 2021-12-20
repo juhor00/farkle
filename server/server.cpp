@@ -112,8 +112,13 @@ bool Server::addClient(SOCKET &client)
 
 bool Server::removeClient(SOCKET &client)
 {
+    int iResult;
     if(hasClient(client)){
-        closesocket(client);
+        iResult = shutdown(client, SD_SEND);
+        if(iResult == SOCKET_ERROR){
+            std::cerr << "Shutdown failed with error " << WSAGetLastError() << std::endl;
+            closesocket(client);
+        }
         ClientSockets.erase(client);
         return true;
     }
@@ -150,7 +155,6 @@ void Server::acceptClients()
 
 void Server::handle(SOCKET& client)
 {
-
     while(true){
         std::cout << "Handling client " << client << std::endl;
         int msg = recv(client, recvbuf, recvbuflen, 0);
@@ -158,11 +162,11 @@ void Server::handle(SOCKET& client)
             std::cout << "Bytes received: " << msg << std::endl;
         } else if(msg == 0){
             std::cout << "Connection closing with " << client << std::endl;
-            closesocket(client);
+            removeClient(client);
             return;
         } else {
             std::cerr << "recv failed with error " << WSAGetLastError() << std::endl;
-            closesocket(client);
+            removeClient(client);
             return;
         }
 

@@ -60,7 +60,6 @@ Network::Network(const char* serverName)
     std::cout << "Connected to the server" << std::endl;
     std::thread t(&Network::receive, this);
     t.detach();
-    sendToServer("1234");
 
 }
 
