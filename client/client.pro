@@ -11,13 +11,18 @@ CONFIG += c++11
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    network.cpp
+    network.cpp \
+    utilities.cpp
 
 HEADERS += \
     mainwindow.h \
-    network.h
+    network.h \
+    utilities.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    networkConfig.txt
