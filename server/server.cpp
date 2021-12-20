@@ -1,6 +1,6 @@
 #include "server.h"
 
-Server::Server()
+Server::Server(const std::string& port)
 {
     WSADATA wsaData;
     struct addrinfo *result = NULL;
@@ -20,7 +20,7 @@ Server::Server()
     hints.ai_flags = AI_PASSIVE;
 
     // Resolve the server address and port
-    iResult = getaddrinfo(NULL, DEFAULT_PORT, &hints, &result);
+    iResult = getaddrinfo(NULL, &port[0], &hints, &result);
     if ( iResult != 0 ) {
         std::cerr << "getaddrinfo failed with error: " << iResult << std::endl;
         WSACleanup();
@@ -72,7 +72,7 @@ Server::~Server()
 bool Server::sendToClient(SOCKET &client, const std::string & msg)
 {
     if(hasClient(client)){
-        int result = send(client, &msg[0], size(msg), 0);
+        int result = send(client, &msg[0], (int)size(msg), 0);
         if(result == SOCKET_ERROR){
             std::cerr << "Send failed with error: " << WSAGetLastError() << std::endl;
             removeClient(client);
@@ -105,7 +105,7 @@ bool Server::addClient(SOCKET &client)
         return false;
     }
     ClientSockets.insert(client);
-    std::thread t(&Server::handle, this, std::ref(client));
+    std::thread t (&Server::handle, this, std::ref(client));
     t.detach();
     return true;
 }
@@ -148,7 +148,7 @@ void Server::acceptClients()
             // New successful connection
             std::cout << "Added new client " << ClientSocket << std::endl;
             addClient(ClientSocket);
-            sendToClient(ClientSocket, "Vittu pääsit inee");
+            // Join message here
         }
     }
 }
@@ -158,6 +158,7 @@ void Server::handle(SOCKET& client)
     while(true){
         std::cout << "Handling client " << client << std::endl;
         int msg = recv(client, recvbuf, recvbuflen, 0);
+
         if(msg > 0){
             std::cout << "Bytes received: " << msg << std::endl;
         } else if(msg == 0){

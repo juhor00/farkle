@@ -11,7 +11,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <set>
+#include <unordered_set>
+#include <unordered_map>
 #include <iostream>
 #include <memory>
 #include <thread>
@@ -22,17 +23,13 @@
 // #pragma comment (lib, "Mswsock.lib")
 
 #define DEFAULT_BUFLEN 512
-#define DEFAULT_PORT "27015"
-
-char recvbuf[DEFAULT_BUFLEN];
-int recvbuflen = DEFAULT_BUFLEN;
 
 
 
 class Server
 {
 public:
-    Server();
+    Server(const std::string& port = "27015");
     ~Server();
 
     bool sendToClient(SOCKET& client, const std::string& msg);
@@ -49,7 +46,10 @@ private:
     void handle(SOCKET& client);
 
     SOCKET ListenSocket = INVALID_SOCKET;
-    std::set<SOCKET> ClientSockets;
+    std::unordered_set<SOCKET> ClientSockets;
+
+    char recvbuf[DEFAULT_BUFLEN];
+    int recvbuflen = DEFAULT_BUFLEN;
 };
 
 #endif // SERVER_H
