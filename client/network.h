@@ -24,7 +24,7 @@
 class Network
 {
 public:
-    Network(const char* serverName);
+    Network(const std::string serverName, const std::string port);
     ~Network();
     bool sendToServer(const std::string& sendbuf);
     void receive();

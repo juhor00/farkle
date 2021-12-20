@@ -1,6 +1,6 @@
 #include "network.h"
 
-Network::Network(const char* serverName)
+Network::Network(const std::string serverName, const std::string port)
 {
     WSADATA wsaData;
     struct addrinfo *result = NULL,
@@ -21,7 +21,7 @@ Network::Network(const char* serverName)
     hints.ai_protocol = IPPROTO_TCP;
 
     // Resolve the server address and port
-    iResult = getaddrinfo(serverName, DEFAULT_PORT, &hints, &result);
+    iResult = getaddrinfo(&serverName[0], &port[0], &hints, &result);
     if ( iResult != 0 ) {
         std::cerr << "getaddrinfo failed with error: " << iResult << std::endl;
         WSACleanup();
