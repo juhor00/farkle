@@ -114,8 +114,9 @@ bool Server::removeClient(SOCKET &client)
 {
     int iResult;
     if(hasClient(client)){
-        iResult = shutdown(client, SD_SEND);
+        iResult = shutdown(client, SD_BOTH);
         if(iResult == SOCKET_ERROR){
+
             std::cerr << "Shutdown failed with error " << WSAGetLastError() << std::endl;
             closesocket(client);
         }

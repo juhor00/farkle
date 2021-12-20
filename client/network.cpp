@@ -58,17 +58,20 @@ Network::Network(const std::string serverName, const std::string port)
         return;
     }
     std::cout << "Connected to the server" << std::endl;
-    std::thread t(&Network::receive, this);
-    t.detach();
+    recv_thread = new std::thread(&Network::receive, this);
 
 }
 
 Network::~Network()
 {
     // shutdown the connection since no more data will be sent
-    int iResult = shutdown(ConnectSocket, SD_SEND);
+    std::cout << "Closing connection to the server" << std::endl;
+    int iResult = shutdown(ConnectSocket, SD_BOTH);
     if (iResult == SOCKET_ERROR) {
         std::cerr << "Shutdown failed with error: " << WSAGetLastError() << std::endl;
+    } else {
+        recv_thread->join();
+        delete recv_thread;
     }
     closesocket(ConnectSocket);
     WSACleanup();
@@ -76,7 +79,7 @@ Network::~Network()
 
 bool Network::sendToServer(const std::string& sendbuf)
 {
-    int result = send(ConnectSocket, &sendbuf[0], size(sendbuf), 0);
+    int result = send(ConnectSocket, &sendbuf[0], (int) size(sendbuf), 0);
     if(result == SOCKET_ERROR){
         std::cerr << "Send failed with error: " << WSAGetLastError() << std::endl;
         return false;

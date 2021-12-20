@@ -34,6 +34,7 @@ private:
     SOCKET ConnectSocket = INVALID_SOCKET;
     char recvbuf[DEFAULT_BUFLEN];
     int recvbuflen = DEFAULT_BUFLEN;
+    std::thread* recv_thread;
 };
 
 #endif // NETWORK_H
