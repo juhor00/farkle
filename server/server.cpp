@@ -157,7 +157,6 @@ void Server::acceptClients()
 void Server::handle(SOCKET& client)
 {
     while(true){
-        std::cout << "Handling client " << client << std::endl;
         int msg = recv(client, recvbuf, recvbuflen, 0);
 
         if(msg > 0){
