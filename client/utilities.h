@@ -10,7 +10,7 @@ using namespace std;
 
 namespace utils{
 
-    unordered_map<string, string> settingsParser(string filename);
+    unordered_map<string, string> settingsParser(const string &filename);
 
 }
 

@@ -1,19 +1,30 @@
 #include "utilities.h"
 
 
-std::unordered_map<std::string, std::string> util::settingsParser(string filename)
+pair<string, string> parseLine(const string& line, const string delimiter=" = ")
 {
-    ifstream file;
-    file.open(filename);
-    if(!file){
+    auto end = line.find(delimiter);
+    string first = line.substr(0, end);
+    string second = line.substr(end+size(delimiter), size(line)-end+size(delimiter));
+    return pair<string, string> {first, second};
+}
+
+
+std::unordered_map<std::string, std::string> utils::settingsParser(const string& filename)
+{
+    ifstream file(filename);
+    if(!file.is_open()){
         cerr << "Can't open file " << filename << endl;
         // Return empty
         return unordered_map<string, string> {};
     }
     string line;
+    unordered_map<string, string> settings;
     while(getline(file, line)){
-        cout << line << endl;
+        auto pair = parseLine(line);
+        settings.insert(pair);
+
     }
     file.close();
-    return unordered_map<string, string> {};
+    return settings;
 }
