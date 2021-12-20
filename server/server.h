@@ -15,6 +15,7 @@
 #include <iostream>
 #include <memory>
 #include <thread>
+#include <string>
 
 // Need to link with Ws2_32.lib
 #pragma comment (lib, "Ws2_32.lib")
@@ -34,6 +35,8 @@ public:
     Server();
     ~Server();
 
+    bool sendToClient(SOCKET& client, const std::string& msg);
+    bool broadcast(const std::string& msg);
 
 private:
 
@@ -44,8 +47,6 @@ private:
     void stopListen();
     void acceptClients();
     void handle(SOCKET& client);
-    bool sendToClient(SOCKET& client, int bytes);
-    bool broadcast(int bytes);
 
     SOCKET ListenSocket = INVALID_SOCKET;
     std::set<SOCKET> ClientSockets;

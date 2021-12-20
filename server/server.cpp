@@ -69,6 +69,36 @@ Server::~Server()
     WSACleanup();
 }
 
+bool Server::sendToClient(SOCKET &client, const std::string & msg)
+{
+    if(hasClient(client)){
+        int result = send(client, &msg[0], size(msg), 0);
+        if(result == SOCKET_ERROR){
+            std::cerr << "Send failed with error: " << WSAGetLastError() << std::endl;
+            removeClient(client);
+            return false;
+        }
+        std::cout << result << " bytes sent to " << client << std::endl;
+    } else { return false; }
+    return true;
+}
+
+bool Server::broadcast(const std::string& msg)
+{
+    bool failed = false;
+    for(SOCKET client : ClientSockets){
+        bool sent = sendToClient(client, msg);
+        if(!sent){
+            failed = true;
+        }
+    }
+    return !failed;
+}
+
+//
+// PRIVATE
+//
+
 bool Server::addClient(SOCKET &client)
 {
     if(hasClient(client)){
@@ -103,16 +133,17 @@ void Server::stopListen()
 
 void Server::acceptClients()
 {
+    std::cout << "Accepting new clients..." << std::endl;
     while(true){
-        std::cout << "Accepting new clients..." << std::endl;
         SOCKET ClientSocket = accept(ListenSocket, NULL, NULL);
         if (ClientSocket == INVALID_SOCKET) {
-            std::cerr << "accept failed with error: " << WSAGetLastError() << std::endl;
+            std::cerr << "Accept failed with error: " << WSAGetLastError() << std::endl;
             return;
         } else {
             // New successful connection
             std::cout << "Added new client " << ClientSocket << std::endl;
             addClient(ClientSocket);
+            sendToClient(ClientSocket, "Vittu pääsit inee");
         }
     }
 }
@@ -127,37 +158,13 @@ void Server::handle(SOCKET& client)
             std::cout << "Bytes received: " << msg << std::endl;
         } else if(msg == 0){
             std::cout << "Connection closing with " << client << std::endl;
+            closesocket(client);
+            return;
         } else {
             std::cerr << "recv failed with error " << WSAGetLastError() << std::endl;
             closesocket(client);
-            WSACleanup();
+            return;
         }
 
     }
-}
-
-bool Server::sendToClient(SOCKET &client, int bytes)
-{
-    if(hasClient(client)){
-        int result = send(client, recvbuf, bytes, 0);
-        if(result == SOCKET_ERROR){
-            std::cerr << "send failed with error: " << WSAGetLastError() << std::endl;
-            removeClient(client);
-            return false;
-        }
-    } else { return false; }
-    std::cout << "Bytes " << bytes << " sent to " << client << std::endl;
-    return true;
-}
-
-bool Server::broadcast(int bytes)
-{
-    bool failed = false;
-    for(SOCKET client : ClientSockets){
-        bool sent = sendToClient(client, bytes);
-        if(!sent){
-            failed = true;
-        }
-    }
-    return !failed;
 }
