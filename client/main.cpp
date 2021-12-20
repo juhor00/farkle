@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "network.h"
-#include "utilities.h"
+#include "../utilities.h"
 
 #include <QApplication>
 
