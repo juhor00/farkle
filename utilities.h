@@ -12,6 +12,8 @@ namespace utils{
 
     unordered_map<string, string> settingsParser(const string &filename);
 
+    bool verifySettings(const unordered_map<string, string>& settings);
+
 }
 
 

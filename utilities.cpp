@@ -28,3 +28,12 @@ std::unordered_map<std::string, std::string> utils::settingsParser(const string&
     file.close();
     return settings;
 }
+
+bool utils::verifySettings(const unordered_map<string, string> &settings)
+{
+    auto hasSetting = [settings](const string& setting){
+        return settings.find(setting) != settings.end();
+    };
+
+    return (hasSetting("ip-address") and hasSetting("port"));
+}
