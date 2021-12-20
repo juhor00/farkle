@@ -76,8 +76,7 @@ Network::~Network()
 
 bool Network::sendToServer(const std::string& sendbuf)
 {
-    const char *test = "this is a test";
-    int result = send(ConnectSocket, test, (int)strlen(test), 0);
+    int result = send(ConnectSocket, &sendbuf[0], size(sendbuf), 0);
     if(result == SOCKET_ERROR){
         std::cerr << "Send failed with error: " << WSAGetLastError() << std::endl;
         return false;
