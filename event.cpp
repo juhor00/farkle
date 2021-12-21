@@ -8,6 +8,16 @@ Event::Event(std::string& message)
     parameters = utils::split(message);
 }
 
+std::string Event::getCommand()
+{
+    return command;
+}
+
+std::vector<std::string> Event::getParameters()
+{
+    return parameters;
+}
+
 void Event::print()
 {
     std::cout << "EVENT INFO" << std::endl;
