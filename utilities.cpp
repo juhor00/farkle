@@ -51,3 +51,16 @@ std::vector<std::string> utils::split(std::string s, std::string delimiter)
     results.push_back(s.substr(0, size(s)));
     return results;
 }
+
+std::string utils::join(const std::vector<std::string> v, const std::string delimiter)
+{
+    std::string result = "";
+    for(std::vector<std::string>::size_type i=0;i<size(v); i++){
+        std::string param = v.at(i);
+        result += param;
+        if(i != size(v)-1){
+            result += " ";
+        }
+    }
+    return result;
+}
