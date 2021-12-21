@@ -6,13 +6,13 @@
 #include <fstream>
 #include <iostream>
 
-using namespace std;
-
 namespace utils{
 
-    unordered_map<string, string> settingsParser(const string &filename);
+    std::unordered_map<std::string, std::string> settingsParser(const std::string &filename);
 
-    bool verifySettings(const unordered_map<string, string>& settings);
+    bool verifySettings(const std::unordered_map<std::string, std::string>& settings);
+
+    std::vector<std::string> split(std::string s, std::string delimiter = " ");
 
 }
 
