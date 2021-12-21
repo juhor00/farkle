@@ -2,7 +2,7 @@
 #define EVENTHANDLER_H
 
 #include "../event.h"
-#include <map>
+#include <unordered_map>
 
 class EventHandler
 {
@@ -10,14 +10,16 @@ public:
     typedef void (EventHandler::*handler)(parameters&);
 
     EventHandler();
-    void newEvent(Event& event);
+    bool newEvent(Event& event);
     void rollEvent(parameters& params);
     void showEvent(parameters& params);
     void bustEvent(parameters& params);
 
 private:
 
-    std::map<command, handler> handlers;
+    bool isValidCommand(command& command);
+
+    std::unordered_map<command, handler> handlers;
 };
 
 #endif // EVENTHANDLER_H
