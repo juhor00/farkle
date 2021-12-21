@@ -5,19 +5,20 @@
 #include <vector>
 #include "utilities.h"
 
+using command = std::string;
 using parameters = std::vector<std::string>;
 
 class Event
 {
 public:
     Event(std::string& message);
-    std::string getCommand();
+    command getCommand();
     parameters getParameters();
     void print();
 
 private:
 
-    std::string command;
+    command command;
     parameters parameters;
 };
 
