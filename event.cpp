@@ -10,6 +10,7 @@ Event::Event(std::string& message)
 
 void Event::print()
 {
+    std::cout << "EVENT INFO" << std::endl;
     std::cout << "Command: " << command << std::endl;
     std::cout << "Parameters: [ ";
     for(std::string& param : parameters){

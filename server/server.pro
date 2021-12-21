@@ -6,6 +6,7 @@ CONFIG -= qt
 SOURCES += \
         ../event.cpp \
         ../utilities.cpp \
+        eventhandler.cpp \
         main.cpp \
         server.cpp \
         thread_example.cpp
@@ -13,4 +14,8 @@ SOURCES += \
 HEADERS += \
     ../event.h \
     ../utilities.h \
+    eventhandler.h \
     server.h
+
+DISTFILES += \
+    ../dataStructure.txt
