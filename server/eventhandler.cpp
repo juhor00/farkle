@@ -11,7 +11,10 @@ EventHandler::EventHandler()
 
 void EventHandler::newEvent(Event &event)
 {
-
+    command command = event.getCommand();
+    parameters parameters = event.getParameters();
+    handler handler = handlers.at(command);
+    (this->*handler)(parameters);
 }
 
 void EventHandler::rollEvent(parameters &params)

@@ -4,11 +4,11 @@
 #include "../event.h"
 #include <map>
 
-using parameters = std::vector<std::string>;
-
 class EventHandler
 {
 public:
+    typedef void (EventHandler::*handler)(parameters&);
+
     EventHandler();
     void newEvent(Event& event);
     void rollEvent(parameters& params);
@@ -17,7 +17,7 @@ public:
 
 private:
 
-    std::map<std::string, void(EventHandler::*)(parameters&)> handlers;
+    std::map<command, handler> handlers;
 };
 
 #endif // EVENTHANDLER_H
