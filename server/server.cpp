@@ -157,11 +157,13 @@ void Server::acceptClients()
 void Server::handle(SOCKET& client)
 {
     while(true){
-        int msg = recv(client, recvbuf, recvbuflen, 0);
+        int bytes = recv(client, recvbuf, recvbuflen, 0);
+        std::string message(recvbuf);
 
-        if(msg > 0){
-            std::cout << "Bytes received: " << msg << std::endl;
-        } else if(msg == 0){
+
+        if(bytes > 0){
+            std::cout << "Bytes received: " << bytes << std::endl;
+        } else if(bytes == 0){
             std::cout << "Connection closing with " << client << std::endl;
             removeClient(client);
             return;
