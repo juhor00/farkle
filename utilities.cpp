@@ -45,7 +45,9 @@ std::vector<std::string> utils::split(std::string s, std::string delimiter)
     std::string param;
     while ((pos = s.find(delimiter)) != std::string::npos) {
         param = s.substr(0, pos);
+        results.push_back(param);
         s.erase(0, pos + delimiter.length());
     }
+    results.push_back(s.substr(0, size(s)));
     return results;
 }
