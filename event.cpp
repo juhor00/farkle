@@ -1,9 +1,9 @@
 #include "event.h"
 
 Event::Event(message message):
-    Event(message, INVALID_SOCKET){}
+    Event(INVALID_SOCKET, message){}
 
-Event::Event(message message, SOCKET client):
+Event::Event(SOCKET client, message message):
     client(client)
 {
     auto i = message.find(" ");
