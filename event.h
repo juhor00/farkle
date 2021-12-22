@@ -17,6 +17,7 @@ public:
     Event(message message, SOCKET client);
     command getCommand();
     parameters getParameters();
+    SOCKET getClient();
     void print();
 
 private:

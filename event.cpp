@@ -22,6 +22,11 @@ std::vector<std::string> Event::getParameters()
     return parameters;
 }
 
+SOCKET Event::getClient()
+{
+    return client;
+}
+
 void Event::print()
 {
     std::cout << "EVENT INFO" << std::endl;
