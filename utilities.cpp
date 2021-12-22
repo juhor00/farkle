@@ -64,3 +64,10 @@ std::string utils::join(const std::vector<std::string> v, const std::string deli
     }
     return result;
 }
+
+std::string utils::join(const std::unordered_set<std::string> s, const std::string delimiter)
+{
+    std::vector<std::string> r(s.size());
+    std::copy(s.begin(), s.end(), r.begin());
+    return join(r, delimiter);
+}
