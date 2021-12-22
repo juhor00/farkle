@@ -8,6 +8,7 @@
 #include <unordered_set>
 
 using message = std::string;
+using dice = std::unordered_set<std::string>;
 
 class EventHandler
 {
@@ -17,8 +18,11 @@ public:
 
     EventHandler(Network& server);
 
-    bool generateEvent(Event& event);
     bool handleEvent(Event& event);
+
+    // Create events
+    void createSaveEvent(dice dice);
+    void createHoldEvent(dice dice);
 
     // Handlers
     void rollEvent(parameters& params);
@@ -28,6 +32,7 @@ public:
 
 private:
 
+    bool sendEvent(Event& event);
     bool isHandler(command& command);
     bool isGenerator(command& command);
 

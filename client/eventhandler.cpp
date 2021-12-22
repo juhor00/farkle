@@ -13,17 +13,7 @@ EventHandler::EventHandler(Network &s):
     generators = {"HOLD", "SAVE"};
 }
 
-bool EventHandler::generateEvent(Event &event)
-{
-    command command = event.getCommand();
-    if(not isGenerator(command)){
-        return false;
-    }
-    parameters parameters = event.getParameters();
-    message msg = command + " " + utils::join(parameters);
-    server.sendToServer(msg);
-    return true;
-}
+
 
 bool EventHandler::handleEvent(Event &event)
 {
@@ -36,6 +26,20 @@ bool EventHandler::handleEvent(Event &event)
     (this->*handler)(parameters);
 
     return true;
+}
+
+void EventHandler::createSaveEvent(dice dice)
+{
+    message msg = "SAVE " + utils::join(dice);
+    Event event(msg);
+    sendEvent(event);
+}
+
+void EventHandler::createHoldEvent(dice dice)
+{
+    message msg = "HOLD " + utils::join(dice);
+    Event event(msg);
+    sendEvent(event);
 }
 
 void EventHandler::rollEvent(parameters &params)
@@ -51,6 +55,18 @@ void EventHandler::showEvent(parameters &params)
 void EventHandler::bustEvent(parameters &params)
 {
 
+}
+
+bool EventHandler::sendEvent(Event &event)
+{
+    command command = event.getCommand();
+    if(not isGenerator(command)){
+        return false;
+    }
+    parameters parameters = event.getParameters();
+    message msg = command + " " + utils::join(parameters);
+    server.sendToServer(msg);
+    return true;
 }
 
 bool EventHandler::isHandler(command &command)
