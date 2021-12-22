@@ -1,7 +1,9 @@
 #include "server.h"
+#include "eventhandler.h"
 
 Server::Server(const std::string& port)
 {
+
     WSADATA wsaData;
     struct addrinfo *result = NULL;
     struct addrinfo hints;
@@ -67,6 +69,11 @@ Server::~Server()
         removeClient(ClientSocket);
     }
     WSACleanup();
+}
+
+void Server::linkEventHandler(EventHandler* e)
+{
+    eventHandler = e;
 }
 
 bool Server::sendToClient(SOCKET &client, const std::string & msg)
@@ -165,7 +172,7 @@ void Server::handle(SOCKET& client)
             std::string message(recvbuf);
             message = message.substr(0, bytes);
             Event event(client, message);
-            event.print();
+            eventHandler->handleEvent(event);
 
         } else if(bytes == 0){
             std::cout << "Connection closing with " << client << std::endl;

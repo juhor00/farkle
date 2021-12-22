@@ -2,7 +2,6 @@
 #define EVENTHANDLER_H
 
 #include "../event.h"
-#include "server.h"
 #include <unordered_map>
 #include <unordered_set>
 #include <algorithm>
@@ -11,13 +10,15 @@ using message = std::string;
 using dice = std::unordered_set<std::string>;
 using diceValue = std::unordered_map<std::string, std::string>;
 
+class Server;
+
 class EventHandler
 {
 public:
     typedef void (EventHandler::*handler)(SOCKET, parameters&);
     typedef void (EventHandler::*generator)(SOCKET, parameters&);
 
-    EventHandler(Server& server);
+    EventHandler(Server* server);
 
     bool handleEvent(Event& event);
 
@@ -37,7 +38,7 @@ private:
     bool isHandler(command& command);
     bool isGenerator(command& command);
 
-    Server server;
+    Server* server;
     std::unordered_map<command, handler> handlers;
     std::unordered_set<command> generators;
 };

@@ -1,6 +1,7 @@
 #include "eventhandler.h"
+#include "server.h"
 
-EventHandler::EventHandler(Server& s):
+EventHandler::EventHandler(Server* s):
     server(s)
 {
 
@@ -54,12 +55,12 @@ void EventHandler::createBustEvent(SOCKET client)
 
 void EventHandler::holdEvent(SOCKET client, parameters &params)
 {
-
+    std::cout << "Client: [" << client << "] Event: [HOLD] Parameters: [" << utils::join(params) << "]" << std::endl;
 }
 
 void EventHandler::saveEvent(SOCKET client, parameters &params)
 {
-
+    std::cout << "Client: [" << client << "] Event: [SAVE] Parameters: [" << utils::join(params) << "]" << std::endl;
 }
 
 bool EventHandler::sendEvent(Event &event)
@@ -71,7 +72,7 @@ bool EventHandler::sendEvent(Event &event)
     parameters parameters = event.getParameters();
     SOCKET client = event.getClient();
     message msg = command + " " + utils::join(parameters);
-    server.sendToClient(client, msg);
+    server->sendToClient(client, msg);
     return true;
 }
 

@@ -26,13 +26,14 @@
 
 #define DEFAULT_BUFLEN 512
 
-
+class EventHandler;
 
 class Server
 {
 public:
     Server(const std::string& port = "27015");
     ~Server();
+    void linkEventHandler(EventHandler* e);
 
     bool sendToClient(SOCKET& client, const std::string& msg);
     bool broadcast(const std::string& msg);
@@ -47,6 +48,7 @@ private:
     void acceptClients();
     void handle(SOCKET& client);
 
+    EventHandler* eventHandler;
     SOCKET ListenSocket = INVALID_SOCKET;
     std::unordered_set<SOCKET> ClientSockets;
 
