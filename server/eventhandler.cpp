@@ -3,16 +3,12 @@
 EventHandler::EventHandler(Server& s):
     server(s)
 {
-    generators = {
-        {"ROLL", &EventHandler::rollEvent},
-        {"SHOW", &EventHandler::showEvent},
-        {"BUST", &EventHandler::bustEvent},
-               };
 
     handlers = {
         {"HOLD", &EventHandler::holdEvent},
         {"SAVE", &EventHandler::saveEvent},
     };
+    generators = {"ROLL", "SHOW", "BUST"};
 
 }
 
@@ -23,8 +19,9 @@ bool EventHandler::generateEvent(Event &event)
         return false;
     }
     parameters parameters = event.getParameters();
-    generator generator = generators.at(command);
-    (this->*generator)(parameters);
+    SOCKET client = event.getClient();
+    message msg = command + " " + utils::join(parameters);
+    server.sendToClient(client, msg);
     return true;
 }
 
@@ -36,38 +33,18 @@ bool EventHandler::handleEvent(Event &event)
     }
     parameters parameters = event.getParameters();
     handler handler = handlers.at(command);
-    (this->*handler)(parameters);
+    SOCKET client = event.getClient();
+    (this->*handler)(parameters, client);
 
     return true;
 }
 
-void EventHandler::rollEvent(parameters &params)
-{
-    message msg = "ROLL ";
-    msg += utils::join(params);
-    //server.sendToClient()
-}
-
-void EventHandler::showEvent(parameters &params)
-{
-    message msg = "SHOW ";
-    msg += utils::join(params);
-    //server.sendToClient()
-}
-
-void EventHandler::bustEvent(parameters &params)
-{
-    message msg = "BUST ";
-    msg += utils::join(params);
-    //server.sendToClient()
-}
-
-void EventHandler::holdEvent(parameters &params)
+void EventHandler::holdEvent(parameters &params, SOCKET client)
 {
 
 }
 
-void EventHandler::saveEvent(parameters &params)
+void EventHandler::saveEvent(parameters &params, SOCKET client)
 {
 
 }
@@ -81,5 +58,6 @@ bool EventHandler::isGenerator(command &command)
 {
     return generators.find(command) != generators.end();
 }
+
 
 
