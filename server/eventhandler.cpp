@@ -1,10 +1,8 @@
 #include "eventhandler.h"
 
-EventHandler::EventHandler(Server& s)
+EventHandler::EventHandler(Server& s):
+    server(s)
 {
-
-    server = s;
-
     generators = {
         {"ROLL", &EventHandler::rollEvent},
         {"SHOW", &EventHandler::showEvent},
@@ -45,31 +43,33 @@ bool EventHandler::handleEvent(Event &event)
 
 void EventHandler::rollEvent(parameters &params)
 {
-
+    message msg = "ROLL ";
+    msg += utils::join(params);
+    //server.sendToClient()
 }
 
 void EventHandler::showEvent(parameters &params)
 {
-
+    message msg = "SHOW ";
+    msg += utils::join(params);
+    //server.sendToClient()
 }
 
 void EventHandler::bustEvent(parameters &params)
 {
-
+    message msg = "BUST ";
+    msg += utils::join(params);
+    //server.sendToClient()
 }
 
 void EventHandler::holdEvent(parameters &params)
 {
-    message msg = "HOLD ";
-    msg += utils::join(params);
-    //server.sendToClient()
+
 }
 
 void EventHandler::saveEvent(parameters &params)
 {
-    message msg = "SAVE ";
-    msg += utils::join(params);
-    //server.sendToClient()
+
 }
 
 bool EventHandler::isHandler(command &command)
