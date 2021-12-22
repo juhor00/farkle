@@ -1,6 +1,10 @@
 #include "event.h"
 
-Event::Event(std::string& message)
+Event::Event(message message):
+    Event(message, INVALID_SOCKET){}
+
+Event::Event(message message, SOCKET client):
+    client(client)
 {
     auto i = message.find(" ");
     command = message.substr(0, i);
@@ -21,6 +25,11 @@ std::vector<std::string> Event::getParameters()
 void Event::print()
 {
     std::cout << "EVENT INFO" << std::endl;
+
+    std::cout << "Client: ";
+    if(client!=INVALID_SOCKET){std::cout << client;} else {std::cout << "NULL";};
+    std::cout << std::endl;
+
     std::cout << "Command: " << command << std::endl;
     std::cout << "Parameters: [ ";
     for(std::string& param : parameters){
