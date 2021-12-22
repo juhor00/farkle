@@ -26,7 +26,7 @@ bool EventHandler::handleEvent(Event &event)
     return true;
 }
 
-void EventHandler::createRollEvent(SOCKET client, diceStr dice)
+void EventHandler::createRollEvent(SOCKET client, dice dice)
 {
     message msg = "ROLL ";
     msg += utils::join(dice);
@@ -34,10 +34,16 @@ void EventHandler::createRollEvent(SOCKET client, diceStr dice)
     sendEvent(event);
 }
 
-void EventHandler::createRollEvent(SOCKET client, diceInt dice)
+void EventHandler::createShowEvent(SOCKET client, diceValue diceValues)
 {
-    createRollEvent(client, toStr(dice));
+    message msg = "SHOW ";
 
+    dice dice(diceValues.size());
+    for(auto& pair : diceValues){
+        dice.insert(pair.first + ":" + pair.second);
+    }
+    Event event(client, msg);
+    sendEvent(event);
 }
 
 void EventHandler::holdEvent(SOCKET client, parameters &params)
@@ -72,15 +78,4 @@ bool EventHandler::isGenerator(command &command)
 {
     return generators.find(command) != generators.end();
 }
-
-diceStr EventHandler::toStr(diceInt dice)
-{
-    diceStr result(dice.size());
-    for(int d : dice){
-        result.insert(std::to_string(d));
-    }
-    return result;
-}
-
-
 

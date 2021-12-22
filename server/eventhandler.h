@@ -8,9 +8,8 @@
 #include <algorithm>
 
 using message = std::string;
-
-using diceStr = std::unordered_set<std::string>;
-using diceInt = std::unordered_set<int>;
+using dice = std::unordered_set<std::string>;
+using diceValue = std::unordered_map<std::string, std::string>;
 
 class EventHandler
 {
@@ -23,8 +22,9 @@ public:
     bool handleEvent(Event& event);
 
     // Create events
-    void createRollEvent(SOCKET client, diceStr dice);
-    void createRollEvent(SOCKET client, diceInt dice);
+    void createRollEvent(SOCKET client, dice dice);
+
+    void createShowEvent(SOCKET client, diceValue diceValues);
 
     // Handlers
     void holdEvent(SOCKET client, parameters& params);
@@ -36,7 +36,6 @@ private:
     bool sendEvent(Event& event);
     bool isHandler(command& command);
     bool isGenerator(command& command);
-    diceStr toStr(diceInt dice);
 
     Server server;
     std::unordered_map<command, handler> handlers;
