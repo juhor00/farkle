@@ -10,10 +10,7 @@ EventHandler::EventHandler(Network &s):
         {"BUST", &EventHandler::bustEvent},
                };
 
-    generators = {
-        {"HOLD", &EventHandler::holdEvent},
-        {"SAVE", &EventHandler::saveEvent},
-    };
+    generators = {"HOLD", "SAVE"};
 }
 
 bool EventHandler::generateEvent(Event &event)
@@ -23,8 +20,8 @@ bool EventHandler::generateEvent(Event &event)
         return false;
     }
     parameters parameters = event.getParameters();
-    generator generator = generators.at(command);
-    (this->*generator)(parameters);
+    message msg = command + " " + utils::join(parameters);
+    server.sendToServer(msg);
     return true;
 }
 
@@ -54,20 +51,6 @@ void EventHandler::showEvent(parameters &params)
 void EventHandler::bustEvent(parameters &params)
 {
 
-}
-
-void EventHandler::holdEvent(parameters &params)
-{
-    message msg = "HOLD ";
-    msg += utils::join(params);
-    server.sendToServer(msg);
-}
-
-void EventHandler::saveEvent(parameters &params)
-{
-    message msg = "SAVE ";
-    msg += utils::join(params);
-    server.sendToServer(msg);
 }
 
 bool EventHandler::isHandler(command &command)

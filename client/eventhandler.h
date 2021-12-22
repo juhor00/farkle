@@ -5,6 +5,7 @@
 #include "../event.h"
 #include "network.h"
 #include <unordered_map>
+#include <unordered_set>
 
 using message = std::string;
 
@@ -24,10 +25,6 @@ public:
     void showEvent(parameters& params);
     void bustEvent(parameters& params);
 
-    // Generators
-    void holdEvent(parameters& params);
-    void saveEvent(parameters& params);
-
 
 private:
 
@@ -36,7 +33,7 @@ private:
 
     Network server;
 
-    std::unordered_map<command, generator> generators;
+    std::unordered_set<command> generators;
     std::unordered_map<command, handler> handlers;
 };
 
