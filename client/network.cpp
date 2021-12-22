@@ -59,7 +59,7 @@ Network::Network(const std::string serverName, const std::string port)
     }
     std::cout << "Connected to the server" << std::endl;
     recv_thread = new std::thread(&Network::receive, this);
-    sendToServer("ROLL 1 4 5");
+    sendToServer("HOLD 1 4 5");
 
 }
 
