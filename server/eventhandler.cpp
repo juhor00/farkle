@@ -46,6 +46,12 @@ void EventHandler::createShowEvent(SOCKET client, diceValue diceValues)
     sendEvent(event);
 }
 
+void EventHandler::createBustEvent(SOCKET client)
+{
+    Event event(client, "BUST");
+    sendEvent(event);
+}
+
 void EventHandler::holdEvent(SOCKET client, parameters &params)
 {
 

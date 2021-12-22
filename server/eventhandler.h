@@ -23,8 +23,8 @@ public:
 
     // Create events
     void createRollEvent(SOCKET client, dice dice);
-
     void createShowEvent(SOCKET client, diceValue diceValues);
+    void createBustEvent(SOCKET client);
 
     // Handlers
     void holdEvent(SOCKET client, parameters& params);
