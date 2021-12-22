@@ -164,7 +164,7 @@ void Server::handle(SOCKET& client)
             std::cout << "Bytes received: " << bytes << std::endl;
             std::string message(recvbuf);
             message = message.substr(0, bytes);
-            Event event(message, client);
+            Event event(client, message);
             event.print();
 
         } else if(bytes == 0){
