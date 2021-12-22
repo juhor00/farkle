@@ -1,8 +1,9 @@
 #ifndef EVENTHANDLER_H
 #define EVENTHANDLER_H
 
+
 #include "../event.h"
-#include "server.h"
+#include "network.h"
 #include <unordered_map>
 #include <unordered_set>
 
@@ -11,17 +12,18 @@ using message = std::string;
 class EventHandler
 {
 public:
-    typedef void (EventHandler::*handler)(parameters&, SOCKET);
-    typedef void (EventHandler::*generator)(parameters&, SOCKET);
+    typedef void (EventHandler::*handler)(parameters&);
+    typedef void (EventHandler::*generator)(parameters&);
 
-    EventHandler(Server& server);
+    EventHandler(Network& server);
 
     bool generateEvent(Event& event);
     bool handleEvent(Event& event);
 
     // Handlers
-    void holdEvent(parameters& params, SOCKET client);
-    void saveEvent(parameters& params, SOCKET client);
+    void rollEvent(parameters& params);
+    void showEvent(parameters& params);
+    void bustEvent(parameters& params);
 
 
 private:
@@ -29,9 +31,10 @@ private:
     bool isHandler(command& command);
     bool isGenerator(command& command);
 
-    Server server;
-    std::unordered_map<command, handler> handlers;
+    Network server;
+
     std::unordered_set<command> generators;
+    std::unordered_map<command, handler> handlers;
 };
 
 #endif // EVENTHANDLER_H

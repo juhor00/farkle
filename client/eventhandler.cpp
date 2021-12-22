@@ -1,15 +1,16 @@
 #include "eventhandler.h"
 
-EventHandler::EventHandler(Server& s):
+
+EventHandler::EventHandler(Network &s):
     server(s)
 {
-
     handlers = {
-        {"HOLD", &EventHandler::holdEvent},
-        {"SAVE", &EventHandler::saveEvent},
-    };
-    generators = {"ROLL", "SHOW", "BUST"};
+        {"ROLL", &EventHandler::rollEvent},
+        {"SHOW", &EventHandler::showEvent},
+        {"BUST", &EventHandler::bustEvent},
+               };
 
+    generators = {"HOLD", "SAVE"};
 }
 
 bool EventHandler::generateEvent(Event &event)
@@ -19,9 +20,8 @@ bool EventHandler::generateEvent(Event &event)
         return false;
     }
     parameters parameters = event.getParameters();
-    SOCKET client = event.getClient();
     message msg = command + " " + utils::join(parameters);
-    server.sendToClient(client, msg);
+    server.sendToServer(msg);
     return true;
 }
 
@@ -33,18 +33,22 @@ bool EventHandler::handleEvent(Event &event)
     }
     parameters parameters = event.getParameters();
     handler handler = handlers.at(command);
-    SOCKET client = event.getClient();
-    (this->*handler)(parameters, client);
+    (this->*handler)(parameters);
 
     return true;
 }
 
-void EventHandler::holdEvent(parameters &params, SOCKET client)
+void EventHandler::rollEvent(parameters &params)
 {
 
 }
 
-void EventHandler::saveEvent(parameters &params, SOCKET client)
+void EventHandler::showEvent(parameters &params)
+{
+
+}
+
+void EventHandler::bustEvent(parameters &params)
 {
 
 }
@@ -58,6 +62,3 @@ bool EventHandler::isGenerator(command &command)
 {
     return generators.find(command) != generators.end();
 }
-
-
-
