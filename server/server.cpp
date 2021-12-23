@@ -1,7 +1,7 @@
 #include "server.h"
-#include "eventhandler.h"
 
-Server::Server(const std::string& port)
+Server::Server(const std::string& port):
+    eventHandler(new EventHandler(this))
 {
 
     WSADATA wsaData;
@@ -69,6 +69,7 @@ Server::~Server()
         removeClient(ClientSocket);
     }
     WSACleanup();
+    delete eventHandler;
 }
 
 void Server::linkEventHandler(EventHandler* e)
@@ -172,6 +173,7 @@ void Server::handle(SOCKET& client)
             std::string message(recvbuf);
             message = message.substr(0, bytes);
             Event event(client, message);
+            std::cout << eventHandler << std::endl;
             eventHandler->handleEvent(event);
 
         } else if(bytes == 0){
