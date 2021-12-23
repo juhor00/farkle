@@ -20,17 +20,19 @@
 #define DEFAULT_BUFLEN 512
 #define DEFAULT_PORT "27015"
 
+class EventHandler;
 
 class Network
 {
 public:
-    Network(const std::string serverName, const std::string port);
+    Network(EventHandler* eventHandler, const std::string serverName, const std::string port);
     ~Network();
     bool sendToServer(const std::string& sendbuf);
     void receive();
 
 private:
 
+    EventHandler* eventHandler;
     SOCKET ConnectSocket = INVALID_SOCKET;
     char recvbuf[DEFAULT_BUFLEN];
     int recvbuflen = DEFAULT_BUFLEN;

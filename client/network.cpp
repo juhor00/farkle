@@ -1,6 +1,8 @@
 #include "network.h"
+#include "eventhandler.h"
 
-Network::Network(const std::string serverName, const std::string port)
+Network::Network(EventHandler* eventHandler, const std::string serverName, const std::string port):
+    eventHandler(eventHandler)
 {
     WSADATA wsaData;
     struct addrinfo *result = NULL,
