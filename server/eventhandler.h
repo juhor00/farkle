@@ -11,12 +11,13 @@ using dice = std::unordered_set<std::string>;
 using diceValue = std::unordered_map<std::string, std::string>;
 
 class Server;
+class EventHandler;
+
+typedef void (EventHandler::*handler)(SOCKET, parameters&);
 
 class EventHandler
 {
 public:
-    typedef void (EventHandler::*handler)(SOCKET, parameters&);
-    typedef void (EventHandler::*generator)(SOCKET, parameters&);
 
     EventHandler(Server* server);
 
