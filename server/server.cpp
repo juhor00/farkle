@@ -72,11 +72,6 @@ Server::~Server()
     delete eventHandler;
 }
 
-void Server::linkEventHandler(EventHandler* e)
-{
-    eventHandler = e;
-}
-
 bool Server::sendToClient(SOCKET &client, const std::string & msg)
 {
     if(hasClient(client)){

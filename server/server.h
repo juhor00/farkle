@@ -34,7 +34,6 @@ class Server
 public:
     Server(const std::string& port = "27015");
     ~Server();
-    void linkEventHandler(EventHandler* e);
 
     bool sendToClient(SOCKET& client, const std::string& msg);
     bool broadcast(const std::string& msg);
