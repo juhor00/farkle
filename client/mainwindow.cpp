@@ -12,6 +12,17 @@ MainWindow::~MainWindow()
 
 void MainWindow::onNoServerConnection()
 {
+    qDebug() << "Display: No connection";
+}
 
+void MainWindow::onDisplayGame()
+{
+    qDebug() << "Display: Game window";
+}
+
+void MainWindow::onRetryConnection()
+{
+    qDebug() << "Retry connection";
+    eventHandler->retryConnection();
 }
 

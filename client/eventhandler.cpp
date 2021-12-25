@@ -28,6 +28,8 @@ EventHandler::EventHandler(MainWindow* m):
     server = new Server(this, address, port);
     if(not server->isConnected()){
         mainWindow->onNoServerConnection();
+    } else {
+        mainWindow->onDisplayGame();
     }
 }
 
@@ -49,9 +51,13 @@ bool EventHandler::handleEvent(Event &event)
     return true;
 }
 
-bool EventHandler::retryConnection()
+void EventHandler::retryConnection()
 {
-    return true;
+    if(server->establishConnection()){
+        mainWindow->onDisplayGame();
+    } else {
+        mainWindow->onNoServerConnection();
+    }
 }
 
 void EventHandler::createSaveEvent(dice dice)

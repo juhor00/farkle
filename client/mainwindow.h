@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QDebug>
 #include "eventhandler.h"
 
 class EventHandler;
@@ -14,17 +15,17 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-signals:
-    void onRetryConnection();
-
 public slots:
     void onNoServerConnection();
+    void onDisplayGame();
 
 
 private slots:
 
 
 private:
+
+    void onRetryConnection();
     EventHandler* eventHandler;
 };
 #endif // MAINWINDOW_H

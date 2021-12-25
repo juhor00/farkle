@@ -22,7 +22,7 @@ public:
     ~EventHandler();
 
     bool handleEvent(Event& event);
-    bool retryConnection();
+    void retryConnection();
 
     // Create events
     void createSaveEvent(dice dice);
