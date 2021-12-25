@@ -1,5 +1,5 @@
-#ifndef NETWORK_H
-#define NETWORK_H
+#ifndef SERVER_H
+#define SERVER_H
 
 #define WIN32_LEAN_AND_MEAN
 
@@ -22,11 +22,11 @@
 
 class EventHandler;
 
-class Network
+class Server
 {
 public:
-    Network(EventHandler* eventHandler, const std::string serverName, const std::string port);
-    ~Network();
+    Server(EventHandler* eventHandler, const std::string serverName, const std::string port);
+    ~Server();
     bool sendToServer(const std::string& sendbuf);
     void receive();
 
@@ -39,4 +39,4 @@ private:
     std::thread* recv_thread;
 };
 
-#endif // NETWORK_H
+#endif // SERVER_H

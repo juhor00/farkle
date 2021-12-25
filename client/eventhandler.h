@@ -3,7 +3,7 @@
 
 
 #include "../event.h"
-#include "network.h"
+#include "server.h"
 #include <unordered_map>
 #include <unordered_set>
 
@@ -39,7 +39,7 @@ private:
     bool isHandler(command& command);
     bool isGenerator(command& command);
 
-    Network* server;
+    Server* server;
     MainWindow* mainWindow;
 
     std::unordered_set<command> generators;

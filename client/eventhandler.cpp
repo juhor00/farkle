@@ -25,7 +25,7 @@ EventHandler::EventHandler(MainWindow* m):
     std::string address = settings.at("ip-address");
     std::string port = settings.at("port");
 
-    server = new Network(this, address, port);
+    server = new Server(this, address, port);
 }
 
 EventHandler::~EventHandler()

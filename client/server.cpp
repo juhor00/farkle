@@ -1,7 +1,7 @@
-#include "network.h"
+#include "server.h"
 #include "eventhandler.h"
 
-Network::Network(EventHandler* eventHandler, const std::string serverName, const std::string port):
+Server::Server(EventHandler* eventHandler, const std::string serverName, const std::string port):
     eventHandler(eventHandler)
 {
     WSADATA wsaData;
@@ -60,12 +60,12 @@ Network::Network(EventHandler* eventHandler, const std::string serverName, const
         return;
     }
     std::cout << "Connected to the server" << std::endl;
-    recv_thread = new std::thread(&Network::receive, this);
+    recv_thread = new std::thread(&Server::receive, this);
     sendToServer("HOLD 1 4 5");
 
 }
 
-Network::~Network()
+Server::~Server()
 {
     // shutdown the connection since no more data will be sent
     std::cout << "Closing connection to the server" << std::endl;
@@ -80,7 +80,7 @@ Network::~Network()
     WSACleanup();
 }
 
-bool Network::sendToServer(const std::string& sendbuf)
+bool Server::sendToServer(const std::string& sendbuf)
 {
     int result = send(ConnectSocket, &sendbuf[0], (int) size(sendbuf), 0);
     if(result == SOCKET_ERROR){
@@ -91,7 +91,7 @@ bool Network::sendToServer(const std::string& sendbuf)
     return true;
 }
 
-void Network::receive()
+void Server::receive()
 {
     int iResult;
     do {
