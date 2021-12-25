@@ -26,6 +26,9 @@ EventHandler::EventHandler(MainWindow* m):
     std::string port = settings.at("port");
 
     server = new Server(this, address, port);
+    if(not server->isConnected()){
+        mainWindow->onNoServerConnection();
+    }
 }
 
 EventHandler::~EventHandler()
@@ -43,6 +46,11 @@ bool EventHandler::handleEvent(Event &event)
     handler handler = handlers.at(command);
     (this->*handler)(parameters);
 
+    return true;
+}
+
+bool EventHandler::retryConnection()
+{
     return true;
 }
 

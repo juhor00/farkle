@@ -14,6 +14,16 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+signals:
+    void onRetryConnection();
+
+public slots:
+    void onNoServerConnection();
+
+
+private slots:
+
+
 private:
     EventHandler* eventHandler;
 };

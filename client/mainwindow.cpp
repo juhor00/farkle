@@ -10,3 +10,8 @@ MainWindow::~MainWindow()
     delete eventHandler;
 }
 
+void MainWindow::onNoServerConnection()
+{
+
+}
+
