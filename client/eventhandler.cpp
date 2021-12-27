@@ -25,7 +25,12 @@ EventHandler::EventHandler(MainWindow* m):
     std::string address = settings.at("ip-address");
     std::string port = settings.at("port");
 
-    server = new Network(this, address, port);
+    server = new Server(this, address, port);
+    if(not server->isConnected()){
+        mainWindow->onNoServerConnection();
+    } else {
+        mainWindow->onDisplayGame();
+    }
 }
 
 EventHandler::~EventHandler()
@@ -44,6 +49,15 @@ bool EventHandler::handleEvent(Event &event)
     (this->*handler)(parameters);
 
     return true;
+}
+
+void EventHandler::retryConnection()
+{
+    if(server->establishConnection()){
+        mainWindow->onDisplayGame();
+    } else {
+        mainWindow->onNoServerConnection();
+    }
 }
 
 void EventHandler::createSaveEvent(dice dice)
