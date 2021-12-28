@@ -1,3 +1,2 @@
 # farkle
-Fakrle-noppapeli :D
-   ^hyvin osattu kirjottaa
+Fakrle-noppapeli :D <- hyvin osattu kirjottaa
