@@ -19,6 +19,7 @@
 #include <string>
 
 #include "../event.h"
+#include "eventhandler.h"
 
 // Need to link with Ws2_32.lib
 #pragma comment (lib, "Ws2_32.lib")
@@ -26,7 +27,7 @@
 
 #define DEFAULT_BUFLEN 512
 
-
+class EventHandler;
 
 class Server
 {
@@ -47,6 +48,7 @@ private:
     void acceptClients();
     void handle(SOCKET& client);
 
+    EventHandler* eventHandler;
     SOCKET ListenSocket = INVALID_SOCKET;
     std::unordered_set<SOCKET> ClientSockets;
 

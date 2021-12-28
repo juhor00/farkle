@@ -14,7 +14,7 @@ class Event
 {
 public:
     Event(message message);
-    Event(message message, SOCKET client);
+    Event(SOCKET client, message message);
     command getCommand();
     parameters getParameters();
     SOCKET getClient();

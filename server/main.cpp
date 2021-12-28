@@ -7,8 +7,7 @@ using namespace std;
 
 int main()
 {
-
-    Server();
+    Server server;
 
 
     return EXIT_SUCCESS;

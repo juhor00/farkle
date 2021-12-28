@@ -14,14 +14,14 @@ SOURCES += \
     eventhandler.cpp \
     main.cpp \
     mainwindow.cpp \
-    network.cpp
+    server.cpp
 
 HEADERS += \
     ../event.h \
     ../utilities.h \
     eventhandler.h \
     mainwindow.h \
-    network.h
+    server.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -30,3 +30,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 DISTFILES += \
     networkConfig.txt
+
+FORMS += \
+    mainwindow.ui

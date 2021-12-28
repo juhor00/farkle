@@ -1,11 +1,15 @@
-#include "network.h"
+#include "server.h"
+#include "eventhandler.h"
 
-Network::Network(const std::string serverName, const std::string port)
+Server::Server(EventHandler* eventHandler, const std::string serverName, const std::string port):
+    eventHandler_(eventHandler)
 {
     WSADATA wsaData;
+
     struct addrinfo *result = NULL,
                     *ptr = NULL,
                     hints;
+
     int iResult;
 
     // Initialize Winsock
@@ -32,55 +36,62 @@ Network::Network(const std::string serverName, const std::string port)
     for(ptr=result; ptr != NULL ;ptr=ptr->ai_next) {
 
         // Create a SOCKET for connecting to server
-        ConnectSocket = socket(ptr->ai_family, ptr->ai_socktype,
+        ConnectSocket_ = socket(ptr->ai_family, ptr->ai_socktype,
             ptr->ai_protocol);
-        if (ConnectSocket == INVALID_SOCKET) {
+        if (ConnectSocket_ == INVALID_SOCKET) {
             std::cerr << "socket failed with error: " << WSAGetLastError() << std::endl;
             WSACleanup();
             return;
         }
-
-        // Connect to server.
-        iResult = connect( ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
-        if (iResult == SOCKET_ERROR) {
-            closesocket(ConnectSocket);
-            ConnectSocket = INVALID_SOCKET;
-            continue;
-        }
+        connectionData_ = ptr;
+        establishConnection();
+        freeaddrinfo(result);
         break;
     }
 
-    freeaddrinfo(result);
-
-    if (ConnectSocket == INVALID_SOCKET) {
-        std::cerr << "Unable to connect to server!" << std::endl;
-        WSACleanup();
-        return;
-    }
-    std::cout << "Connected to the server" << std::endl;
-    recv_thread = new std::thread(&Network::receive, this);
-    sendToServer("ROLL 1 4 5");
-
 }
 
-Network::~Network()
+Server::~Server()
 {
     // shutdown the connection since no more data will be sent
     std::cout << "Closing connection to the server" << std::endl;
-    int iResult = shutdown(ConnectSocket, SD_BOTH);
+    int iResult = shutdown(ConnectSocket_, SD_BOTH);
     if (iResult == SOCKET_ERROR) {
         std::cerr << "Shutdown failed with error: " << WSAGetLastError() << std::endl;
     } else {
-        recv_thread->join();
-        delete recv_thread;
+        recvThread_->join();
+        delete recvThread_;
     }
-    closesocket(ConnectSocket);
+    closesocket(ConnectSocket_);
     WSACleanup();
 }
 
-bool Network::sendToServer(const std::string& sendbuf)
+bool Server::establishConnection()
 {
-    int result = send(ConnectSocket, &sendbuf[0], (int) size(sendbuf), 0);
+    // Connect to server.
+    int iResult = connect( ConnectSocket_, connectionData_->ai_addr, (int)connectionData_->ai_addrlen);
+    if (iResult == SOCKET_ERROR) {
+        closesocket(ConnectSocket_);
+        ConnectSocket_ = INVALID_SOCKET;
+        std::cerr << "Unable to connect to server!" << std::endl;
+        WSACleanup();
+        return false;
+    }
+
+    std::cout << "Connected to the server" << std::endl;
+    recvThread_ = new std::thread(&Server::receive, this);
+    sendToServer("HOLD 1 4 5");
+    return true;
+}
+
+bool Server::isConnected()
+{
+    return ConnectSocket_ != INVALID_SOCKET;
+}
+
+bool Server::sendToServer(const std::string& sendbuf)
+{
+    int result = send(ConnectSocket_, &sendbuf[0], (int) size(sendbuf), 0);
     if(result == SOCKET_ERROR){
         std::cerr << "Send failed with error: " << WSAGetLastError() << std::endl;
         return false;
@@ -89,12 +100,12 @@ bool Network::sendToServer(const std::string& sendbuf)
     return true;
 }
 
-void Network::receive()
+void Server::receive()
 {
     int iResult;
     do {
 
-        iResult = recv(ConnectSocket, recvbuf, recvbuflen, 0);
+        iResult = recv(ConnectSocket_, recvbuf_, recvbuflen_, 0);
         if ( iResult > 0 )
             std::cout << "Bytes received: " << iResult << std::endl;
         else if ( iResult == 0 )
