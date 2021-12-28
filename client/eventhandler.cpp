@@ -1,9 +1,11 @@
 #include "eventhandler.h"
+#include "mainwindow.h"
 
 
-EventHandler::EventHandler(Network &s):
-    server(s)
+EventHandler::EventHandler(MainWindow* m):
+    mainWindow(m)
 {
+
     handlers = {
         {"ROLL", &EventHandler::rollEvent},
         {"SHOW", &EventHandler::showEvent},
@@ -11,9 +13,30 @@ EventHandler::EventHandler(Network &s):
                };
 
     generators = {"HOLD", "SAVE"};
+
+    // Network settings
+    std::string settingsFile = "networkConfig.txt";
+    auto settings = utils::settingsParser(settingsFile);
+
+    if(not utils::verifySettings(settings)){
+        std::cerr << "File " << settingsFile << " is invalid" << std::endl;
+        // INVALID NETWORK SETTINGS, DO SOMETHING
+    }
+    std::string address = settings.at("ip-address");
+    std::string port = settings.at("port");
+
+    server = new Server(this, address, port);
+    if(not server->isConnected()){
+        mainWindow->onNoServerConnection();
+    } else {
+        mainWindow->onDisplayGame();
+    }
 }
 
-
+EventHandler::~EventHandler()
+{
+    delete server;
+}
 
 bool EventHandler::handleEvent(Event &event)
 {
@@ -26,6 +49,15 @@ bool EventHandler::handleEvent(Event &event)
     (this->*handler)(parameters);
 
     return true;
+}
+
+void EventHandler::retryConnection()
+{
+    if(server->establishConnection()){
+        mainWindow->onDisplayGame();
+    } else {
+        mainWindow->onNoServerConnection();
+    }
 }
 
 void EventHandler::createSaveEvent(dice dice)
@@ -65,7 +97,7 @@ bool EventHandler::sendEvent(Event &event)
     }
     parameters parameters = event.getParameters();
     message msg = command + " " + utils::join(parameters);
-    server.sendToServer(msg);
+    server->sendToServer(msg);
     return true;
 }
 
