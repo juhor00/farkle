@@ -15,16 +15,7 @@ MainWindow::~MainWindow()
     delete eventHandler;
 }
 
-void MainWindow::holdDice(unordered_set<string> &dice)
-{
-    eventHandler->createHoldEvent(dice);
-}
-
-void MainWindow::saveDice(unordered_set<string> &dice)
-{
-    eventHandler->createSaveEvent(dice);
-}
-
+// Don't change this
 void MainWindow::rollDice(std::unordered_set<string> &dice)
 {
     unordered_set<int> diceInt(dice.size());
@@ -34,6 +25,12 @@ void MainWindow::rollDice(std::unordered_set<string> &dice)
     rollDice(diceInt);
 }
 
+void MainWindow::rollDice(unordered_set<int> &dice)
+{
+
+}
+
+// Don't change this
 void MainWindow::showDice(std::unordered_map<string, string> &diceValues)
 {
     unordered_map<int, int> diceValuesInt(diceValues.size());
@@ -43,18 +40,44 @@ void MainWindow::showDice(std::unordered_map<string, string> &diceValues)
     showDice(diceValuesInt);
 }
 
-void MainWindow::bust()
-{
-
-}
-
-void MainWindow::rollDice(unordered_set<int> &dice)
-{
-
-}
-
 void MainWindow::showDice(unordered_map<int, int> &diceValues)
 {
 
 }
 
+void MainWindow::bust()
+{
+
+}
+
+void MainWindow::onNoServerConnection()
+{
+    qDebug() << "No server connection";
+}
+
+void MainWindow::onDisplayGame()
+{
+    qDebug() << "Display: Game";
+}
+
+void MainWindow::onDisplayNoConnection()
+{
+
+}
+
+void MainWindow::onInformNoConnection()
+{
+
+}
+
+// Don't change this
+void MainWindow::holdDice(unordered_set<string> &dice)
+{
+    eventHandler->createHoldEvent(dice);
+}
+
+// Don't change this
+void MainWindow::saveDice(unordered_set<string> &dice)
+{
+    eventHandler->createSaveEvent(dice);
+}
