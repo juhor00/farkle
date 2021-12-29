@@ -46,6 +46,8 @@ private slots:
     void onInformNoConnection();
 
 
+    void on_pushButton_clicked();
+
 private:
     // Send event methods
     void holdDice(unordered_set<string>& dice);

@@ -103,6 +103,7 @@ void Server::receive()
             std::cout << "Connection closed" << std::endl;
         else {
             std::cerr << "recv failed with error: " << WSAGetLastError() << std::endl;
+            ConnectSocket_ = INVALID_SOCKET;
             eventHandler_->noConnectionEvent();
         }
 

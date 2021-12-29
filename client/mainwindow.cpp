@@ -60,6 +60,7 @@ void MainWindow::bust(int &player)
 void MainWindow::onNoServerConnection()
 {
     qDebug() << "No server connection";
+    cerr << "GUI: No server connection" << endl;
 }
 
 void MainWindow::onDisplayGame()
@@ -88,3 +89,9 @@ void MainWindow::saveDice(unordered_set<string> &dice)
 {
     eventHandler->createSaveEvent(dice);
 }
+
+void MainWindow::on_pushButton_clicked()
+{
+    eventHandler->retryConnection();
+}
+
