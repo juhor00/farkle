@@ -101,8 +101,10 @@ void Server::receive()
             std::cout << "Bytes received: " << iResult << std::endl;
         else if ( iResult == 0 )
             std::cout << "Connection closed" << std::endl;
-        else
-            std::cerr << "recv failed with error: " << WSAGetLastError();
+        else {
+            std::cerr << "recv failed with error: " << WSAGetLastError() << std::endl;
+            eventHandler_->noConnectionEvent();
+        }
 
     } while( iResult > 0 );
 }

@@ -96,6 +96,11 @@ void EventHandler::bustEvent(parameters &params)
     mainWindow->bust(player);
 }
 
+void EventHandler::noConnectionEvent()
+{
+    mainWindow->onNoServerConnection();
+}
+
 bool EventHandler::sendEvent(Event &event)
 {
     command command = event.getCommand();

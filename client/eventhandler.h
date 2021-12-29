@@ -34,6 +34,7 @@ public:
     void rollEvent(parameters& params);
     void showEvent(parameters& params);
     void bustEvent(parameters& params);
+    void noConnectionEvent();
 
 
 private:
