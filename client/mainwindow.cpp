@@ -57,6 +57,16 @@ void MainWindow::bust(int &player)
 
 }
 
+void MainWindow::setTurn(string &player)
+{
+
+}
+
+void MainWindow::setTurn(int &player)
+{
+
+}
+
 void MainWindow::onNoServerConnection()
 {
     qDebug() << "No server connection";
@@ -69,11 +79,6 @@ void MainWindow::onDisplayGame()
 }
 
 void MainWindow::onDisplayNoConnection()
-{
-
-}
-
-void MainWindow::onInformNoConnection()
 {
 
 }

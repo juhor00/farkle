@@ -35,6 +35,9 @@ public slots:
     void bust(std::string& player);
     void bust(int& player);
 
+    void setTurn(std::string& player);
+    void setTurn(int& player);
+
     void onNoServerConnection();
     void onDisplayGame();
 
@@ -42,10 +45,8 @@ private slots:
     // Called if can't connect at all
     void onDisplayNoConnection();
 
-    // Called if connection is lost during game
-    void onInformNoConnection();
-
-
+    // ONLY FOR TESTING RETRY CONNECTION
+    // Can be removed
     void on_pushButton_clicked();
 
 private:
