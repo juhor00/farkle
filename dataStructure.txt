@@ -40,3 +40,4 @@ SAVE <dice indexes>			# Dice to hold and save
 ROLL <dice indexes>			# Start rolling given dice
 SHOW <<die index:die value> pairs>	# Show dice with values
 BUST <player>				# Given player's turn is over and all score is lost
+TURN <player>                           # Player in turn
