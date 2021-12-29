@@ -54,3 +54,4 @@ Makefile*
 *.prl
 
 server.drawio
+start-server.bat
