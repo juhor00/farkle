@@ -26,23 +26,19 @@ public:
 
 public slots:
 
-    void rollDice(std::unordered_set<std::string>& dice);
+    // Game events
     void rollDice(unordered_set<int>& dice);
-
-    void showDice(std::unordered_map<std::string, std::string>& diceValues);
     void showDice(unordered_map<int, int>& diceValues);
-
-    void bust(std::string& player);
     void bust(int& player);
-
-    void setTurn(std::string& player);
     void setTurn(int& player);
+    void gameover();
 
+    // General events
     void onNoServerConnection();
     void onDisplayGame();
 
 private slots:
-    // Called if can't connect at all
+    // idk if needed
     void onDisplayNoConnection();
 
     // ONLY FOR TESTING RETRY CONNECTION
@@ -51,8 +47,8 @@ private slots:
 
 private:
     // Send event methods
-    void holdDice(unordered_set<string>& dice);
-    void saveDice(unordered_set<string>& dice);
+    void holdDice(unordered_set<int>& dice);
+    void saveDice(unordered_set<int>& dice);
 
     Ui::MainWindow* ui;
     EventHandler* eventHandler;

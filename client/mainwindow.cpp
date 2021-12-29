@@ -15,29 +15,9 @@ MainWindow::~MainWindow()
     delete eventHandler;
 }
 
-// Don't change this
-void MainWindow::rollDice(std::unordered_set<string> &dice)
-{
-    unordered_set<int> diceInt(dice.size());
-    for(auto& die : dice){
-        diceInt.insert(stoi(die));
-    }
-    rollDice(diceInt);
-}
-
 void MainWindow::rollDice(unordered_set<int> &dice)
 {
 
-}
-
-// Don't change this
-void MainWindow::showDice(std::unordered_map<string, string> &diceValues)
-{
-    unordered_map<int, int> diceValuesInt(diceValues.size());
-    for(auto& pair : diceValues){
-        diceValuesInt.insert({stoi(pair.first), stoi(pair.second)});
-    }
-    showDice(diceValuesInt);
 }
 
 void MainWindow::showDice(unordered_map<int, int> &diceValues)
@@ -45,24 +25,16 @@ void MainWindow::showDice(unordered_map<int, int> &diceValues)
 
 }
 
-// Don't change this
-void MainWindow::bust(std::string& player)
-{
-    int playerInt = stoi(player);
-    bust(playerInt);
-}
-
 void MainWindow::bust(int &player)
 {
 
 }
-
-void MainWindow::setTurn(string &player)
+void MainWindow::setTurn(int &player)
 {
 
 }
 
-void MainWindow::setTurn(int &player)
+void MainWindow::gameover()
 {
 
 }
@@ -84,13 +56,13 @@ void MainWindow::onDisplayNoConnection()
 }
 
 // Don't change this
-void MainWindow::holdDice(unordered_set<string> &dice)
+void MainWindow::holdDice(unordered_set<int> &dice)
 {
     eventHandler->createHoldEvent(dice);
 }
 
 // Don't change this
-void MainWindow::saveDice(unordered_set<string> &dice)
+void MainWindow::saveDice(unordered_set<int> &dice)
 {
     eventHandler->createSaveEvent(dice);
 }
