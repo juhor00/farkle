@@ -45,7 +45,14 @@ void MainWindow::showDice(unordered_map<int, int> &diceValues)
 
 }
 
-void MainWindow::bust()
+// Don't change this
+void MainWindow::bust(std::string& player)
+{
+    int playerInt = stoi(player);
+    bust(playerInt);
+}
+
+void MainWindow::bust(int &player)
 {
 
 }

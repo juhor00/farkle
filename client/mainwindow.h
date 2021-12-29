@@ -32,7 +32,8 @@ public slots:
     void showDice(std::unordered_map<std::string, std::string>& diceValues);
     void showDice(unordered_map<int, int>& diceValues);
 
-    void bust();
+    void bust(std::string& player);
+    void bust(int& player);
 
     void onNoServerConnection();
     void onDisplayGame();
