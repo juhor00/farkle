@@ -8,9 +8,9 @@
 #include <unordered_set>
 
 using message = std::string;
-using dice = std::unordered_set<std::string>;
-using diceValues = std::unordered_map<std::string, std::string>;
-using player = std::string;
+using dice = std::unordered_set<int>;
+using diceValues = std::unordered_map<int, int>;
+using player = int;
 
 class MainWindow;
 
@@ -23,18 +23,25 @@ public:
     EventHandler(MainWindow* m);
     ~EventHandler();
 
-    bool handleEvent(Event& event);
+    // Create general events
     void retryConnection();
 
-    // Create events
+    // Create game events
     void createSaveEvent(dice dice);
     void createHoldEvent(dice dice);
 
-    // Handlers
+    // General event handlers
+    void noConnectionEvent();
+    bool handleEvent(Event& event);
+
+    // Game event handlers
     void rollEvent(parameters& params);
     void showEvent(parameters& params);
     void bustEvent(parameters& params);
-    void noConnectionEvent();
+    void turnEvent(parameters& params);
+    void overEvent(parameters&);
+
+
 
 
 private:

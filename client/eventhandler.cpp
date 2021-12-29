@@ -38,19 +38,6 @@ EventHandler::~EventHandler()
     delete server;
 }
 
-bool EventHandler::handleEvent(Event &event)
-{
-    command command = event.getCommand();
-    if(not isHandler(command)){
-        return false;
-    }
-    parameters parameters = event.getParameters();
-    handler handler = handlers.at(command);
-    (this->*handler)(parameters);
-
-    return true;
-}
-
 void EventHandler::retryConnection()
 {
     if(not server->isConnected()){
@@ -66,16 +53,36 @@ void EventHandler::retryConnection()
 
 void EventHandler::createSaveEvent(dice dice)
 {
-    message msg = "SAVE " + utils::join(dice);
+    auto params = utils::toString(dice);
+    message msg = "SAVE " + utils::join(params);
     Event event(msg);
     sendEvent(event);
 }
 
 void EventHandler::createHoldEvent(dice dice)
 {
-    message msg = "HOLD " + utils::join(dice);
+    auto params = utils::toString(dice);
+    message msg = "HOLD " + utils::join(params);
     Event event(msg);
     sendEvent(event);
+}
+
+void EventHandler::noConnectionEvent()
+{
+    mainWindow->onNoServerConnection();
+}
+
+bool EventHandler::handleEvent(Event &event)
+{
+    command command = event.getCommand();
+    if(not isHandler(command)){
+        return false;
+    }
+    parameters parameters = event.getParameters();
+    handler handler = handlers.at(command);
+    (this->*handler)(parameters);
+
+    return true;
 }
 
 void EventHandler::rollEvent(parameters &params)
@@ -92,13 +99,19 @@ void EventHandler::showEvent(parameters &params)
 
 void EventHandler::bustEvent(parameters &params)
 {
-    player player = params.front();
+    player player = utils::toInt(params.front());
     mainWindow->bust(player);
 }
 
-void EventHandler::noConnectionEvent()
+void EventHandler::turnEvent(parameters &params)
 {
-    mainWindow->onNoServerConnection();
+    player player = utils::toInt(params.front());
+    mainWindow->setTurn(player);
+}
+
+void EventHandler::overEvent(parameters &)
+{
+    mainWindow->gameover();
 }
 
 bool EventHandler::sendEvent(Event &event)
@@ -125,7 +138,8 @@ bool EventHandler::isGenerator(command &command)
 
 dice EventHandler::paramsToDice(parameters &params)
 {
-    dice dice(params.begin(), params.end());
+    std::unordered_set<std::string> p(params.begin(), params.end());
+    dice dice = utils::toInt(p);
     return dice;
 }
 
@@ -134,7 +148,7 @@ diceValues EventHandler::paramsToDiceValues(parameters &params)
     diceValues dice(params.size());
     for(auto& pair : params){
         auto diceValue = utils::split(pair);
-        dice.insert({diceValue.at(0), diceValue.at(1)});
+        dice.insert({utils::toInt(diceValue.at(0)), utils::toInt(diceValue.at(1))});
     }
     return dice;
 }
