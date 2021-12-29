@@ -12,17 +12,17 @@ different PARAMETERS are separated by spaces: param1 param2 param3
 # PARAMETERS
 # ----------
 
-<dice indexes>
+<dice indexes> int
 Description: Player has 6 dice with indexes 0-5. Opponent has 6 dice with indexes 6-11.
 Index refers to one die.
 Example: 1 3 5
 
-<die index:die value>
+<die index:die value> int:int
 Description: die <index> has value <value>
 Example: 1:2 5:3 4:2
 Die 1 has value 2, die 5 has value 3 and die 4 has value 2
 
-<player>
+<player> int
 Description: Client (0) or opponent (1)
 Example: 1
 Refers to opponent
