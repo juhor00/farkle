@@ -71,3 +71,50 @@ std::string utils::join(const std::unordered_set<std::string> s, const std::stri
     std::copy(s.begin(), s.end(), r.begin());
     return join(r, delimiter);
 }
+
+std::unordered_set<int> utils::toInt(std::unordered_set<std::string> &s)
+{
+    std::unordered_set<int> i(s.size());
+    for(auto& value : s){
+        i.insert(stoi(value));
+    }
+    return i;
+
+}
+
+std::unordered_map<int, int> utils::toInt(std::unordered_map<std::string, std::string> &s)
+{
+    std::unordered_map<int, int> i(s.size());
+    for(auto& pair: s){
+        i.insert({stoi(pair.first), stoi(pair.second)});
+    }
+    return i;
+}
+
+int utils::toInt(std::string &s)
+{
+    return stoi(s);
+}
+
+std::unordered_set<std::string> utils::toString(std::unordered_set<int> &i)
+{
+    std::unordered_set<std::string> s(i.size());
+    for( auto& value : i){
+        s.insert(std::to_string(value));
+    }
+    return s;
+}
+
+std::unordered_map<std::string, std::string> utils::toString(std::unordered_map<int, int> &i)
+{
+    std::unordered_map<std::string, std::string> s(i.size());
+    for(auto& pair : i){
+        s.insert({std::to_string(pair.first), std::to_string(pair.second)});
+    }
+    return s;
+}
+
+std::string utils::toString(int &i)
+{
+    return std::to_string(i);
+}
