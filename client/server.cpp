@@ -43,11 +43,20 @@ Server::Server(EventHandler* eventHandler, const std::string serverName, const s
             WSACleanup();
             return;
         }
-        connectionData_ = ptr;
-        establishConnection();
-        freeaddrinfo(result);
+        // Connect to server.
+        iResult = connect( ConnectSocket_, ptr->ai_addr, (int)ptr->ai_addrlen);
+        if (iResult == SOCKET_ERROR) {
+            closesocket(ConnectSocket_);
+            ConnectSocket_ = INVALID_SOCKET;
+            continue;
+        }
         break;
     }
+    freeaddrinfo(result);
+
+    std::cout << "Connected to the server" << std::endl;
+    recvThread_ = new std::thread(&Server::receive, this);
+    sendToServer("HOLD 1 4 5");
 
 }
 
@@ -64,24 +73,6 @@ Server::~Server()
     }
     closesocket(ConnectSocket_);
     WSACleanup();
-}
-
-bool Server::establishConnection()
-{
-    // Connect to server.
-    int iResult = connect( ConnectSocket_, connectionData_->ai_addr, (int)connectionData_->ai_addrlen);
-    if (iResult == SOCKET_ERROR) {
-        closesocket(ConnectSocket_);
-        ConnectSocket_ = INVALID_SOCKET;
-        std::cerr << "Unable to connect to server!" << std::endl;
-        WSACleanup();
-        return false;
-    }
-
-    std::cout << "Connected to the server" << std::endl;
-    recvThread_ = new std::thread(&Server::receive, this);
-    sendToServer("HOLD 1 4 5");
-    return true;
 }
 
 bool Server::isConnected()

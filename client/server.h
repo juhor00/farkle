@@ -29,7 +29,6 @@ class Server
 public:
     Server(EventHandler* eventHandler, const std::string serverName, const std::string port);
     ~Server();
-    bool establishConnection();
     bool isConnected();
     bool sendToServer(const std::string& sendbuf);
     void receive();
@@ -37,7 +36,6 @@ public:
 private:
 
     EventHandler* eventHandler_;
-    addrinfo* connectionData_;
     SOCKET ConnectSocket_ = INVALID_SOCKET;
     char recvbuf_[DEFAULT_BUFLEN];
     int recvbuflen_ = DEFAULT_BUFLEN;

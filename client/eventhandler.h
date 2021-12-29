@@ -9,6 +9,8 @@
 
 using message = std::string;
 using dice = std::unordered_set<std::string>;
+using diceValues = std::unordered_map<std::string, std::string>;
+using player = std::string;
 
 class MainWindow;
 
@@ -39,8 +41,12 @@ private:
     bool sendEvent(Event& event);
     bool isHandler(command& command);
     bool isGenerator(command& command);
+    dice paramsToDice(parameters& params);
+    diceValues paramsToDiceValues(parameters& params);
 
     Server* server;
+    std::string address_;
+    std::string port_;
     MainWindow* mainWindow;
 
     std::unordered_set<command> generators;

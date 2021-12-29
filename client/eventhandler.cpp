@@ -22,10 +22,10 @@ EventHandler::EventHandler(MainWindow* m):
         std::cerr << "File " << settingsFile << " is invalid" << std::endl;
         // INVALID NETWORK SETTINGS, DO SOMETHING
     }
-    std::string address = settings.at("ip-address");
-    std::string port = settings.at("port");
+    address_ = settings.at("ip-address");
+    port_ = settings.at("port");
 
-    server = new Server(this, address, port);
+    server = new Server(this, address_, port_);
     if(not server->isConnected()){
         mainWindow->onNoServerConnection();
     } else {
@@ -53,7 +53,11 @@ bool EventHandler::handleEvent(Event &event)
 
 void EventHandler::retryConnection()
 {
-    if(server->establishConnection()){
+    if(not server->isConnected()){
+        delete server;
+        server = new Server(this, address_, port_);
+    }
+    if(server->isConnected()){
         mainWindow->onDisplayGame();
     } else {
         mainWindow->onNoServerConnection();
@@ -76,17 +80,20 @@ void EventHandler::createHoldEvent(dice dice)
 
 void EventHandler::rollEvent(parameters &params)
 {
-
+    dice dice = paramsToDice(params);
+    mainWindow->rollDice(dice);
 }
 
 void EventHandler::showEvent(parameters &params)
 {
-
+    diceValues dice = paramsToDiceValues(params);
+    mainWindow->showDice(dice);
 }
 
 void EventHandler::bustEvent(parameters &params)
 {
-
+    player player = params.front();
+    mainWindow->bust(player);
 }
 
 bool EventHandler::sendEvent(Event &event)
@@ -109,4 +116,20 @@ bool EventHandler::isHandler(command &command)
 bool EventHandler::isGenerator(command &command)
 {
     return generators.find(command) != generators.end();
+}
+
+dice EventHandler::paramsToDice(parameters &params)
+{
+    dice dice(params.begin(), params.end());
+    return dice;
+}
+
+diceValues EventHandler::paramsToDiceValues(parameters &params)
+{
+    diceValues dice(params.size());
+    for(auto& pair : params){
+        auto diceValue = utils::split(pair);
+        dice.insert({diceValue.at(0), diceValue.at(1)});
+    }
+    return dice;
 }
