@@ -4,27 +4,32 @@ Event::Event(message message):
     Event(INVALID_SOCKET, message){}
 
 Event::Event(SOCKET client, message message):
-    client(client)
+    client_(client)
 {
     auto i = message.find(" ");
-    command = message.substr(0, i);
+    cmd_ = message.substr(0, i);
     message.erase(0, i+1);
-    parameters = utils::split(message);
+    params_ = utils::split(message);
+}
+
+Event::Event(SOCKET client, command command, parameters parameters):
+    client_(client), cmd_(command), params_(parameters)
+{
 }
 
 std::string Event::getCommand()
 {
-    return command;
+    return cmd_;
 }
 
 std::vector<std::string> Event::getParameters()
 {
-    return parameters;
+    return params_;
 }
 
 SOCKET Event::getClient()
 {
-    return client;
+    return client_;
 }
 
 void Event::print()
@@ -32,12 +37,12 @@ void Event::print()
     std::cout << "EVENT INFO" << std::endl;
 
     std::cout << "Client: ";
-    if(client!=INVALID_SOCKET){std::cout << client;} else {std::cout << "NULL";};
+    if(client_!=INVALID_SOCKET){std::cout << client_;} else {std::cout << "NULL";};
     std::cout << std::endl;
 
-    std::cout << "Command: " << command << std::endl;
+    std::cout << "Command: " << cmd_ << std::endl;
     std::cout << "Parameters: [ ";
-    for(std::string& param : parameters){
+    for(std::string& param : params_){
         std::cout << param << " ";
     }
     std::cout << "]" << std::endl;

@@ -15,6 +15,7 @@ class Event
 public:
     Event(message message);
     Event(SOCKET client, message message);
+    Event(SOCKET client, command cmd, parameters params);
     command getCommand();
     parameters getParameters();
     SOCKET getClient();
@@ -22,9 +23,9 @@ public:
 
 private:
 
-    command command;
-    parameters parameters;
-    SOCKET client;
+    SOCKET client_;
+    command cmd_;
+    parameters params_;
 };
 
 #endif // EVENT_H
