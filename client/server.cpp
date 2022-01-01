@@ -97,11 +97,16 @@ void Server::receive()
     do {
 
         iResult = recv(ConnectSocket_, recvbuf_, recvbuflen_, 0);
-        if ( iResult > 0 )
+        if ( iResult > 0 ){
             std::cout << "Bytes received: " << iResult << std::endl;
-        else if ( iResult == 0 )
+            message message(recvbuf_);
+            message = message.substr(0, iResult);
+            Event event(message);
+            eventHandler_->handleEvent(event);
+
+        } else if ( iResult == 0 ){
             std::cout << "Connection closed" << std::endl;
-        else {
+        } else {
             std::cerr << "recv failed with error: " << WSAGetLastError() << std::endl;
             ConnectSocket_ = INVALID_SOCKET;
             eventHandler_->noConnectionEvent();

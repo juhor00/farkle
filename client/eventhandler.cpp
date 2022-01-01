@@ -74,6 +74,7 @@ void EventHandler::noConnectionEvent()
 
 bool EventHandler::handleEvent(Event &event)
 {
+    event.print();
     command command = event.getCommand();
     if(not isHandler(command)){
         return false;
