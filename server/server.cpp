@@ -165,7 +165,7 @@ void Server::handle(SOCKET client)
 
         if(bytes > 0){
             std::cout << "Received from " << client << std::endl;
-            std::string message(recvbuf);
+            message message(recvbuf);
             message = message.substr(0, bytes);
             Event event(client, message);
             eventHandler->handleEvent(event);
