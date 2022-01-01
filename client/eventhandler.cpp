@@ -146,9 +146,9 @@ dice EventHandler::paramsToDice(parameters &params)
 
 diceValues EventHandler::paramsToDiceValues(parameters &params)
 {
-    diceValues dice(params.size());
+    diceValues dice;
     for(auto& pair : params){
-        auto diceValue = utils::split(pair);
+        auto diceValue = utils::split(pair, ":");
         dice.insert({utils::toInt(diceValue.at(0)), utils::toInt(diceValue.at(1))});
     }
     return dice;
