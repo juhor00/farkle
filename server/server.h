@@ -40,13 +40,13 @@ public:
 
 private:
 
-    bool addClient(SOCKET& client);
+    bool addClient(SOCKET client);
     bool removeClient(SOCKET& client);
     bool hasClient(SOCKET& client);
 
     void stopListen();
     void acceptClients();
-    void handle(SOCKET& client);
+    void handle(SOCKET client);
 
     EventHandler* eventHandler;
     SOCKET ListenSocket = INVALID_SOCKET;

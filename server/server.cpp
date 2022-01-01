@@ -102,13 +102,13 @@ bool Server::broadcast(const std::string& msg)
 // PRIVATE
 //
 
-bool Server::addClient(SOCKET &client)
+bool Server::addClient(SOCKET client)
 {
     if(hasClient(client)){
         return false;
     }
     ClientSockets.insert(client);
-    std::thread t (&Server::handle, this, std::ref(client));
+    std::thread t (&Server::handle, this, client);
     t.detach();
     return true;
 }
@@ -157,14 +157,14 @@ void Server::acceptClients()
     }
 }
 
-void Server::handle(SOCKET& client)
+void Server::handle(SOCKET client)
 {
     while(true){
         int bytes = recv(client, recvbuf, recvbuflen, 0);
 
 
         if(bytes > 0){
-            std::cout << "Bytes received: " << bytes << std::endl;
+            std::cout << "Received from " << client << std::endl;
             std::string message(recvbuf);
             message = message.substr(0, bytes);
             Event event(client, message);
