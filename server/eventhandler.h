@@ -28,18 +28,25 @@ public:
     void createShowEvent(SOCKET client, diceValue diceValues);
     void createBustEvent(SOCKET client);
 
+
+private:
+
     // Handlers
     void holdEvent(SOCKET client, parameters& params);
     void saveEvent(SOCKET client, parameters& params);
-
-
-private:
+    void testEvent(SOCKET client, parameters&);
 
     bool sendEvent(Event& event);
     bool isHandler(command& command);
     bool isGenerator(command& command);
 
+    void testBroadcast(Event& event);
+
     Server* server;
+    SOCKET testClient;
+
+    std::unordered_set<SOCKET> clients;
+
     std::unordered_map<command, handler> handlers;
     std::unordered_set<command> generators;
 };

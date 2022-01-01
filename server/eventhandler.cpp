@@ -2,12 +2,13 @@
 #include "server.h"
 
 EventHandler::EventHandler(Server* s):
-    server(s)
+    server(s), testClient(INVALID_SOCKET)
 {
 
     handlers = {
         {"HOLD", &EventHandler::holdEvent},
         {"SAVE", &EventHandler::saveEvent},
+        {"TEST", &EventHandler::testEvent},
     };
     generators = {"ROLL", "SHOW", "BUST"};
 
@@ -15,15 +16,24 @@ EventHandler::EventHandler(Server* s):
 
 bool EventHandler::handleEvent(Event &event)
 {
+    event.print();
+    SOCKET client = event.getClient();
     command command = event.getCommand();
-    if(not isHandler(command)){
+    parameters parameters = event.getParameters();
+    std::cout << "Client: " << client << " Test client: " << testClient << std::endl;
+    if(client == testClient){
+        // Pass command to others
+        testBroadcast(event);
+        return true;
+    }
+    else if(not isHandler(command)){
         return false;
     }
-    parameters parameters = event.getParameters();
-    handler handler = handlers.at(command);
-    SOCKET client = event.getClient();
-    (this->*handler)(client, parameters);
 
+    // Handle normally
+    clients.insert(client);
+    handler handler = handlers.at(command);
+    (this->*handler)(client, parameters);
     return true;
 }
 
@@ -63,6 +73,12 @@ void EventHandler::saveEvent(SOCKET client, parameters &params)
     std::cout << "Client: [" << client << "] Event: [SAVE] Parameters: [" << utils::join(params) << "]" << std::endl;
 }
 
+void EventHandler::testEvent(SOCKET client, parameters&)
+{
+    testClient = client;
+    std::cout << "Client: [" << client << "] Event: [TEST]" << std::endl;
+}
+
 bool EventHandler::sendEvent(Event &event)
 {
     command command = event.getCommand();
@@ -84,5 +100,27 @@ bool EventHandler::isHandler(command &command)
 bool EventHandler::isGenerator(command &command)
 {
     return generators.find(command) != generators.end();
+}
+
+void EventHandler::testBroadcast(Event &event)
+{
+    SOCKET sender = event.getClient();
+    command command = event.getCommand();
+    parameters parameters = event.getParameters();
+
+    std::unordered_set<std::string> broadcastTo(clients.size());
+    for(auto c : clients){
+        if(c != sender){
+            broadcastTo.insert(std::to_string(c));
+        }
+    }
+    std::cout << "Broadcasting to: " << utils::join(broadcastTo) << std::endl;
+
+    for(SOCKET sendTo : clients){
+        if(sendTo != sender){
+            Event eventToSend(sendTo, command, parameters);
+            sendEvent(eventToSend);
+        }
+    }
 }
 
