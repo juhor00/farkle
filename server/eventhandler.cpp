@@ -10,7 +10,7 @@ EventHandler::EventHandler(Server* s):
         {"SAVE", &EventHandler::saveEvent},
         {"TEST", &EventHandler::testEvent},
     };
-    generators = {"ROLL", "SHOW", "BUST"};
+    generators = {"ROLL", "SHOW", "BUST", "TURN", "OVER"};
 
 }
 
