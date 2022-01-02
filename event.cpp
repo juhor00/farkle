@@ -8,8 +8,15 @@ Event::Event(SOCKET client, message message):
 {
     auto i = message.find(" ");
     cmd_ = message.substr(0, i);
-    message.erase(0, i+1);
-    params_ = utils::split(message);
+
+    // Parameters
+    if(i != message.npos){
+        message.erase(0, i+1);
+        params_ = utils::split(message);
+    } else {
+        params_ = {};
+        return;
+    }
 }
 
 Event::Event(SOCKET client, command command, parameters parameters):
