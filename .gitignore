@@ -55,3 +55,6 @@ Makefile*
 
 server.drawio
 start-server.bat
+*.xml
+*.iml
+*.pyc

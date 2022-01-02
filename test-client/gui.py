@@ -1,0 +1,170 @@
+import tkinter as tk
+from tkinter import ttk
+from client import Client
+import threading
+
+
+ROWLEN = 3
+COLSPAN = 3
+
+
+def new_thread(target, daemon=True, args=()):
+    thread = threading.Thread(target=target, args=args, daemon=daemon)
+    thread.start()
+
+
+class Gui(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.resizable(False, False)
+
+        self.client = Client(self)
+        self.widgets = []
+        self.title("Farkle commands")
+
+        self.text_ = tk.Text(self, height=5, width=52, state="disable")
+        self.input_ = tk.Label(self)
+        self.commands_ = ttk.Combobox(self, values=["ROLL", "SHOW", "BUST", "TURN", "OVER"], state="readonly")
+        self.commands_.current(0)
+        self.dice_ = DiceSelection(self, [1, 2, 3, 4, 5, 6])
+        self.player_ = PlayerSelection(self, {"Player": 0, "Opponent": 1})
+
+        # Output
+        tk.Label(self, text="Output").grid(columnspan=COLSPAN)
+        self.text_.grid(columnspan=COLSPAN)
+
+        # Input
+        tk.Label(self, text="Input").grid(columnspan=COLSPAN)
+        self.input_.grid(columnspan=COLSPAN)
+        tk.Label(self, text="Command").grid(row=4, column=0)
+        tk.Label(self, text="Dice").grid(row=4, column=1)
+        tk.Label(self, text="Player").grid(row=4, column=2)
+        self.commands_.grid(row=5, column=0)
+        self.dice_.grid(row=5, column=1)
+        self.player_.grid(row=5, column=2)
+
+        # Send
+        tk.Button(self, text="Send", command=lambda: self.send_event(None)).grid(columnspan=COLSPAN)
+
+        # Close
+        tk.Button(self, text="Close", command=self.destroy).grid(columnspan=COLSPAN)
+
+        # Binds
+        self.bind('<Return>', self.send_event)
+        self.commands_.bind("<<ComboboxSelected>>", self.generate)
+        self.generate()
+
+        self.after(0, new_thread(target=self.client.receive))
+        self.client.send(bytes("TEST", encoding="UTF-8"))
+
+    def send_event(self, _):
+        msg = self.input_["text"]
+        self.client.send(bytes(msg, encoding="UTF-8"))
+
+    def receive_event(self, msg):
+        self.text_.config(state="normal")
+        self.text_.insert('end', msg+"\n")
+        self.text_.see('end')
+        self.text_.config(state="disable")
+
+    def generate(self, event=None):
+        command = self.commands_.get()
+
+        commands = {
+            "SHOW": self.dice_,
+            "ROLL": self.dice_,
+            "BUST": self.player_,
+            "TURN": self.player_,
+            "OVER": None,
+            }
+        widget = commands[command]
+        if widget:
+            if type(widget) == PlayerSelection:
+                params = widget.get()
+            elif type(widget) == DiceSelection:
+                if command == "SHOW":
+                    params = widget.get_values()
+                else:
+                    params = widget.get_dice()
+            else:
+                params = []
+
+            self.input_.config(text=command + " " + " ".join(params))
+        else:
+            self.input_.config(text=command)
+
+
+class DiceSelection(tk.Frame):
+
+    def __init__(self, master, values: list):
+        super().__init__(master)
+        self.dice_selection = []
+        self.dice_values = []
+        for i, val in enumerate(values):
+            selection = tk.IntVar()
+
+            # Selection
+            tk.Checkbutton(self, text=val, variable=selection, onvalue=val, offvalue=0, command=self.master.generate)\
+                .grid(row=int(i / ROWLEN), column=2 * (i % ROWLEN))
+
+            # Value
+            value = ttk.Combobox(self, values=[1, 2, 3, 4, 5, 6], state="readonly", width=2)
+            value.current(0)
+            value.bind("<<ComboboxSelected>>", self.master.generate)
+
+            self.dice_values.append(value)
+            self.dice_selection.append(selection)
+
+            value.grid(row=int(i / ROWLEN), column=2*(i % ROWLEN) + 1)
+
+    def get_dice(self):
+        dice = []
+        for v in self.dice_selection:
+            if v.get() != 0:
+                dice.append(str(v.get()))
+        return dice
+
+    def get_values(self):
+        dice = []
+        for die, value in zip(self.dice_selection, self.dice_values):
+            if die.get() == 0:
+                continue
+            else:
+                dice.append(f"{die.get()}:{value.get()}")
+        return dice
+
+    def disable(self):
+        for w in self.winfo_children():
+            w.config(state="disable")
+
+    def enable(self):
+        for w in self.winfo_children():
+            w.config(state="enable")
+
+
+class PlayerSelection(tk.Frame):
+
+    def __init__(self, master, values: dict):
+        super().__init__(master)
+
+        self.var = tk.IntVar()
+
+        for i, key in enumerate(values):
+            tk.Radiobutton(self, text=key, variable=self.var, value=values[key], command=self.master.generate)\
+                .grid(row=i % 2, column=0, sticky="w")
+
+    def get(self):
+        return [str(self.var.get())]
+
+    def disable(self):
+        for w in self.winfo_children():
+            w.config(state="disable")
+
+    def enable(self):
+        for w in self.winfo_children():
+            w.config(state="enable")
+
+
+if __name__ == '__main__':
+    gui = Gui()
+    gui.mainloop()
