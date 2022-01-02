@@ -58,3 +58,4 @@ start-server.bat
 *.xml
 *.iml
 *.pyc
+*.bat
