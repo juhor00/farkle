@@ -35,7 +35,7 @@ class Client:
         try:
             return self.client.recv(2048)
         except socket.error:
-            return "error"
+            return b"error"
 
     def send(self, data):
         """
