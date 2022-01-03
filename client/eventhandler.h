@@ -34,17 +34,17 @@ public:
     void noConnectionEvent();
     bool handleEvent(Event& event);
 
+
+
+
+private:
+
     // Game event handlers
     void rollEvent(parameters& params);
     void showEvent(parameters& params);
     void bustEvent(parameters& params);
     void turnEvent(parameters& params);
     void overEvent(parameters&);
-
-
-
-
-private:
 
     bool sendEvent(Event& event);
     bool isHandler(command& command);
