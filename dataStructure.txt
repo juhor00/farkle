@@ -27,6 +27,11 @@ Description: Client (0) or opponent (1)
 Example: 1
 Refers to opponent
 
+<player:score> int:int
+Description: player <player> has score <score>
+Example 0:200
+Player 0 (Client) has 200 score
+
 
 # --------
 # COMMANDS
@@ -42,3 +47,5 @@ SHOW <<die index:die value> pairs>	# Show dice with values
 BUST <player>				# Given player's turn is over and all score is lost
 TURN <player>                           # Player in turn
 OVER                                    # Game is over
+ROUND <player:score>                    # Player's round score
+TOTAL <player:score>                    # Player's total score

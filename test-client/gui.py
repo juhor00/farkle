@@ -24,7 +24,8 @@ class Gui(tk.Tk):
 
         self.text_ = tk.Text(self, height=5, width=52, state="disable")
         self.input_ = tk.Label(self)
-        self.commands_ = ttk.Combobox(self, values=["ROLL", "SHOW", "BUST", "TURN", "OVER", "SCORE"], state="readonly")
+        self.commands_ = ttk.Combobox(self, state="readonly",
+                                      values=["ROLL", "SHOW", "BUST", "TURN", "OVER", "ROUND", "TOTAL"])
         self.commands_.current(0)
         self.dice_ = DiceSelection(self, [1, 2, 3, 4, 5, 6])
         self.player_ = PlayerSelection(self, {"Player": 0, "Opponent": 1})
@@ -76,12 +77,13 @@ class Gui(tk.Tk):
             "BUST": self.player_,
             "TURN": self.player_,
             "OVER": None,
-            "SCORE": self.player_,
+            "ROUND": self.player_,
+            "TOTAL": self.player_,
             }
         widget = commands[command]
         if widget:
             if type(widget) == PlayerSelection:
-                if command == "SCORE":
+                if command == "ROUND" or command == "TOTAL":
                     params = widget.get_score()
                 else:
                     params = widget.get_player()
