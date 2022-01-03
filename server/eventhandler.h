@@ -21,12 +21,16 @@ public:
 
     EventHandler(Server* server);
 
+    void removeClient(SOCKET client);
+
     bool handleEvent(Event& event);
 
     // Create events
     void createRollEvent(SOCKET client, dice dice);
     void createShowEvent(SOCKET client, diceValue diceValues);
-    void createBustEvent(SOCKET client);
+    void createBustEvent(SOCKET client, SOCKET player);
+    void createTurnEvent(SOCKET client, SOCKET player);
+    void createOverEvent(SOCKET client);
 
 
 private:

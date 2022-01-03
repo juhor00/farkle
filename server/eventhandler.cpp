@@ -14,6 +14,11 @@ EventHandler::EventHandler(Server* s):
 
 }
 
+void EventHandler::removeClient(SOCKET client)
+{
+    clients.erase(client);
+}
+
 bool EventHandler::handleEvent(Event &event)
 {
     event.print();
@@ -57,11 +62,21 @@ void EventHandler::createShowEvent(SOCKET client, diceValue diceValues)
     sendEvent(event);
 }
 
-void EventHandler::createBustEvent(SOCKET client)
+void EventHandler::createBustEvent(SOCKET client, SOCKET player)
 {
-    Event event(client, "BUST");
-    sendEvent(event);
+
 }
+
+void EventHandler::createTurnEvent(SOCKET client, SOCKET player)
+{
+
+}
+
+void EventHandler::createOverEvent(SOCKET client)
+{
+
+}
+
 
 void EventHandler::holdEvent(SOCKET client, parameters &params)
 {
