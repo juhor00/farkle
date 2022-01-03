@@ -11,6 +11,7 @@ using message = std::string;
 using dice = std::unordered_set<int>;
 using diceValues = std::unordered_map<int, int>;
 using player = int;
+using playerScore = std::pair<int,int>;
 
 class MainWindow;
 
@@ -45,12 +46,12 @@ private:
     void bustEvent(parameters& params);
     void turnEvent(parameters& params);
     void overEvent(parameters&);
+    void roundEvent(parameters& params);
+    void totalEvent(parameters& params);
 
     bool sendEvent(Event& event);
     bool isHandler(command& command);
     bool isGenerator(command& command);
-    dice paramsToDice(parameters& params);
-    diceValues paramsToDiceValues(parameters& params);
 
     Server* server;
     std::string address_;

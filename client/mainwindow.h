@@ -29,9 +29,11 @@ public slots:
     // Game events
     void rollDice(unordered_set<int>& dice);
     void showDice(unordered_map<int, int>& diceValues);
-    void bust(int& player);
-    void setTurn(int& player);
+    void bust(int player);
+    void setTurn(int player);
     void gameover();
+    void setRoundPoints(int player, int points);
+    void setTotalPoints(int player, int points);
 
     // General events
     void onNoServerConnection();

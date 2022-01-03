@@ -2,6 +2,33 @@
 #include "mainwindow.h"
 
 
+// Return params string to dice (unordered set of ints)
+dice paramsToDice(parameters &params)
+{
+    std::unordered_set<std::string> p(params.begin(), params.end());
+    dice dice = utils::toInt(p);
+    return dice;
+}
+
+// Return params string to dice:value (int:int) unordered map
+diceValues paramsToDiceValues(parameters &params)
+{
+    diceValues dice;
+    for(auto& pair : params){
+        auto diceValue = utils::split(pair, ":");
+        dice.insert({utils::toInt(diceValue.at(0)), utils::toInt(diceValue.at(1))});
+    }
+    return dice;
+}
+
+// Return param string to player:score (int:int) pair
+playerScore paramsToPlayerScores(parameters &params)
+{
+    auto playerScore = utils::split(params.at(0), ":");
+    return {utils::toInt(playerScore.at(0)), utils::toInt(playerScore.at(1))};
+
+}
+
 EventHandler::EventHandler(MainWindow* m):
     mainWindow(m)
 {
@@ -10,6 +37,10 @@ EventHandler::EventHandler(MainWindow* m):
         {"ROLL", &EventHandler::rollEvent},
         {"SHOW", &EventHandler::showEvent},
         {"BUST", &EventHandler::bustEvent},
+        {"TURN", &EventHandler::turnEvent},
+        {"OVER", &EventHandler::overEvent},
+        {"ROUND", &EventHandler::roundEvent},
+        {"TOTAL", &EventHandler::totalEvent},
                };
 
     generators = {"HOLD", "SAVE"};
@@ -115,6 +146,18 @@ void EventHandler::overEvent(parameters &)
     mainWindow->gameover();
 }
 
+void EventHandler::roundEvent(parameters &params)
+{
+    playerScore score = paramsToPlayerScores(params);
+    mainWindow->setRoundPoints(score.first, score.second);
+}
+
+void EventHandler::totalEvent(parameters &params)
+{
+    playerScore score = paramsToPlayerScores(params);
+    mainWindow->setTotalPoints(score.first, score.second);
+}
+
 bool EventHandler::sendEvent(Event &event)
 {
     command command = event.getCommand();
@@ -137,19 +180,3 @@ bool EventHandler::isGenerator(command &command)
     return generators.find(command) != generators.end();
 }
 
-dice EventHandler::paramsToDice(parameters &params)
-{
-    std::unordered_set<std::string> p(params.begin(), params.end());
-    dice dice = utils::toInt(p);
-    return dice;
-}
-
-diceValues EventHandler::paramsToDiceValues(parameters &params)
-{
-    diceValues dice;
-    for(auto& pair : params){
-        auto diceValue = utils::split(pair, ":");
-        dice.insert({utils::toInt(diceValue.at(0)), utils::toInt(diceValue.at(1))});
-    }
-    return dice;
-}

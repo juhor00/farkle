@@ -25,16 +25,26 @@ void MainWindow::showDice(unordered_map<int, int> &diceValues)
 
 }
 
-void MainWindow::bust(int &player)
+void MainWindow::bust(int player)
 {
 
 }
-void MainWindow::setTurn(int &player)
+void MainWindow::setTurn(int player)
 {
 
 }
 
 void MainWindow::gameover()
+{
+
+}
+
+void MainWindow::setRoundPoints(int player, int points)
+{
+
+}
+
+void MainWindow::setTotalPoints(int player, int points)
 {
 
 }
