@@ -24,7 +24,7 @@ class Gui(tk.Tk):
 
         self.text_ = tk.Text(self, height=5, width=52, state="disable")
         self.input_ = tk.Label(self)
-        self.commands_ = ttk.Combobox(self, values=["ROLL", "SHOW", "BUST", "TURN", "OVER"], state="readonly")
+        self.commands_ = ttk.Combobox(self, values=["ROLL", "SHOW", "BUST", "TURN", "OVER", "SCORE"], state="readonly")
         self.commands_.current(0)
         self.dice_ = DiceSelection(self, [1, 2, 3, 4, 5, 6])
         self.player_ = PlayerSelection(self, {"Player": 0, "Opponent": 1})
@@ -67,7 +67,7 @@ class Gui(tk.Tk):
         self.text_.see('end')
         self.text_.config(state="disable")
 
-    def generate(self, event=None):
+    def generate(self, *args):
         command = self.commands_.get()
 
         commands = {
@@ -76,11 +76,15 @@ class Gui(tk.Tk):
             "BUST": self.player_,
             "TURN": self.player_,
             "OVER": None,
+            "SCORE": self.player_,
             }
         widget = commands[command]
         if widget:
             if type(widget) == PlayerSelection:
-                params = widget.get()
+                if command == "SCORE":
+                    params = widget.get_score()
+                else:
+                    params = widget.get_player()
             elif type(widget) == DiceSelection:
                 if command == "SHOW":
                     params = widget.get_values()
@@ -148,13 +152,28 @@ class PlayerSelection(tk.Frame):
         super().__init__(master)
 
         self.var = tk.IntVar()
+        self.scores = []
 
         for i, key in enumerate(values):
             tk.Radiobutton(self, text=key, variable=self.var, value=values[key], command=self.master.generate)\
                 .grid(row=i % 2, column=0, sticky="w")
+            sv = tk.StringVar(master=self)
+            score = tk.Entry(self, width=8, textvariable=sv)
+            score.insert(0, '0')
+            score.grid(row=i % 2, column=1, sticky="w")
+            sv.trace("w", lambda name, mode, index, var=sv: self.master.generate())
+            self.scores.append(sv)
 
-    def get(self):
+    def get_player(self):
         return [str(self.var.get())]
+
+    def get_score(self):
+        player = int(self.get_player()[0])
+        score = self.scores[player]
+        if self.is_score(score.get()):
+            return [f"{player}:{score.get()}"]
+        else:
+            return [f"{player}:0"]
 
     def disable(self):
         for w in self.winfo_children():
@@ -163,6 +182,14 @@ class PlayerSelection(tk.Frame):
     def enable(self):
         for w in self.winfo_children():
             w.config(state="enable")
+
+    @staticmethod
+    def is_score(value):
+        try:
+            int(value)
+            return True
+        except ValueError:
+            return False
 
 
 if __name__ == '__main__':
