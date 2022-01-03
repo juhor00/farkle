@@ -25,7 +25,6 @@ bool EventHandler::handleEvent(Event &event)
     SOCKET client = event.getClient();
     command command = event.getCommand();
     parameters parameters = event.getParameters();
-    std::cout << "Client: " << client << " Test client: " << testClient << std::endl;
     if(client == testClient){
         // Pass command to others
         testBroadcast(event);

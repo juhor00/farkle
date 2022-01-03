@@ -43,12 +43,12 @@ void Event::print()
 {
     std::cout << "EVENT INFO" << std::endl;
 
-    std::cout << "Client: ";
+    std::cout << "\tClient: ";
     if(client_!=INVALID_SOCKET){std::cout << client_;} else {std::cout << "NULL";};
     std::cout << std::endl;
 
-    std::cout << "Command: " << cmd_ << std::endl;
-    std::cout << "Parameters: [ ";
+    std::cout << "\tCommand: " << cmd_ << std::endl;
+    std::cout << "\tParameters: [ ";
     for(std::string& param : params_){
         std::cout << param << " ";
     }

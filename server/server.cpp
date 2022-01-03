@@ -81,7 +81,6 @@ bool Server::sendToClient(SOCKET &client, const std::string & msg)
             removeClient(client);
             return false;
         }
-        std::cout << result << " bytes sent to " << client << std::endl;
     } else { return false; }
     return true;
 }
@@ -143,7 +142,6 @@ void Server::stopListen()
 
 void Server::acceptClients()
 {
-    std::cout << "Accepting new clients..." << std::endl;
     while(true){
         SOCKET ClientSocket = accept(ListenSocket, NULL, NULL);
         if (ClientSocket == INVALID_SOCKET) {
@@ -165,7 +163,6 @@ void Server::handle(SOCKET client)
 
 
         if(bytes > 0){
-            std::cout << "Received from " << client << std::endl;
             message message(recvbuf);
             message = message.substr(0, bytes);
             Event event(client, message);
