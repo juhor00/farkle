@@ -16,6 +16,7 @@ public:
     Event(message message);
     Event(SOCKET client, message message);
     Event(SOCKET client, command cmd, parameters params);
+    void setClient(SOCKET client);
     command getCommand();
     parameters getParameters();
     SOCKET getClient();

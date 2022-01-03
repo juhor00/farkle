@@ -24,6 +24,11 @@ Event::Event(SOCKET client, command command, parameters parameters):
 {
 }
 
+void Event::setClient(SOCKET client)
+{
+    client_ = client;
+}
+
 std::string Event::getCommand()
 {
     return cmd_;
