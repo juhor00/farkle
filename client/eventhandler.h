@@ -13,13 +13,15 @@ using diceValues = std::unordered_map<int, int>;
 using player = int;
 using playerScore = std::pair<int,int>;
 
+class EventHandler;
+typedef void (EventHandler::*handler)(parameters&);
+typedef void (EventHandler::*generator)(parameters&);
+
 class MainWindow;
 
 class EventHandler
 {
 public:
-    typedef void (EventHandler::*handler)(parameters&);
-    typedef void (EventHandler::*generator)(parameters&);
 
     EventHandler(MainWindow* m);
     ~EventHandler();
