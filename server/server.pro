@@ -19,3 +19,5 @@ HEADERS += \
 
 DISTFILES += \
     ../dataStructure.txt
+
+LIBS += -lws2_32
