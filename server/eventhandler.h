@@ -26,11 +26,11 @@ public:
     bool handleEvent(Event& event);
 
     // Create events
-    void createRollEvent(SOCKET client, dice dice);
-    void createShowEvent(SOCKET client, diceValue diceValues);
-    void createBustEvent(SOCKET client, SOCKET player);
-    void createTurnEvent(SOCKET client, SOCKET player);
-    void createOverEvent(SOCKET client);
+    void createRollEvent(dice dice);
+    void createShowEvent(diceValue diceValues);
+    void createBustEvent(SOCKET player);
+    void createTurnEvent(SOCKET player);
+    void createOverEvent();
 
 
 private:
@@ -45,6 +45,7 @@ private:
     bool isGenerator(command& command);
 
     void testBroadcast(Event& event);
+    void broadcast(Event& event);
 
     Server* server;
     SOCKET testClient;

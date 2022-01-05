@@ -10,7 +10,7 @@ EventHandler::EventHandler(Server* s):
         {"SAVE", &EventHandler::saveEvent},
         {"TEST", &EventHandler::testEvent},
     };
-    generators = {"ROLL", "SHOW", "BUST", "TURN", "OVER"};
+    generators = {"ROLL", "SHOW", "BUST", "TURN", "OVER", "ROUND", "TOTAL"};
 
 }
 
@@ -41,15 +41,15 @@ bool EventHandler::handleEvent(Event &event)
     return true;
 }
 
-void EventHandler::createRollEvent(SOCKET client, dice dice)
+void EventHandler::createRollEvent(dice dice)
 {
     message msg = "ROLL ";
     msg += utils::join(dice);
-    Event event(client, msg);
-    sendEvent(event);
+    Event event(msg);
+    broadcast(event);
 }
 
-void EventHandler::createShowEvent(SOCKET client, diceValue diceValues)
+void EventHandler::createShowEvent(diceValue diceValues)
 {
     message msg = "SHOW ";
 
@@ -57,23 +57,34 @@ void EventHandler::createShowEvent(SOCKET client, diceValue diceValues)
     for(auto& pair : diceValues){
         dice.insert(pair.first + ":" + pair.second);
     }
-    Event event(client, msg);
-    sendEvent(event);
+    Event event(msg);
+    broadcast(event);
 }
 
-void EventHandler::createBustEvent(SOCKET client, SOCKET player)
+void EventHandler::createBustEvent(SOCKET player)
 {
-
+    message bust = "BUST ";
+    for(auto client : clients){
+        message msg = bust + std::to_string((int) client != player);
+        Event event(client, msg);
+        sendEvent(event);
+    }
 }
 
-void EventHandler::createTurnEvent(SOCKET client, SOCKET player)
+void EventHandler::createTurnEvent(SOCKET player)
 {
-
+    message turn = "TURN ";
+    for(auto client : clients){
+        message msg = turn + std::to_string((int) client != player);
+        Event event(client, msg);
+        sendEvent(event);
+    }
 }
 
-void EventHandler::createOverEvent(SOCKET client)
+void EventHandler::createOverEvent()
 {
-
+    Event event("OVER");
+    broadcast(event);
 }
 
 
@@ -135,6 +146,15 @@ void EventHandler::testBroadcast(Event &event)
             Event eventToSend(sendTo, command, parameters);
             sendEvent(eventToSend);
         }
+    }
+}
+
+void EventHandler::broadcast(Event &event)
+{
+    std::cout << "Broadcasting" << std::endl;
+    for(auto client : clients){
+        event.setClient(client);
+        sendEvent(event);
     }
 }
 
