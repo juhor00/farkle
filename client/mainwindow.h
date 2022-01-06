@@ -27,11 +27,10 @@ public:
 public slots:
 
     // Game events
-    void rollDice(unordered_set<int>& dice);
     void showDice(unordered_map<int, int>& diceValues);
     void bust(int player);
     void setTurn(int player);
-    void gameover();
+    void gameover(int player);
     void setRoundPoints(int player, int points);
     void setTotalPoints(int player, int points);
 
@@ -40,8 +39,6 @@ public slots:
     void onDisplayGame();
 
 private slots:
-    // idk if needed
-    void onDisplayNoConnection();
 
     // ONLY FOR TESTING RETRY CONNECTION
     // Can be removed

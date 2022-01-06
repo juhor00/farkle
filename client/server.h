@@ -12,11 +12,6 @@
 #include <iostream>
 #include <thread>
 
-// Need to link with Ws2_32.lib, Mswsock.lib, and Advapi32.lib
-#pragma comment (lib, "Ws2_32.lib")
-#pragma comment (lib, "Mswsock.lib")
-#pragma comment (lib, "AdvApi32.lib")
-
 #define DEFAULT_BUFLEN 512
 #define DEFAULT_PORT "27015"
 

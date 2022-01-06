@@ -15,11 +15,6 @@ MainWindow::~MainWindow()
     delete eventHandler;
 }
 
-void MainWindow::rollDice(unordered_set<int> &dice)
-{
-
-}
-
 void MainWindow::showDice(unordered_map<int, int> &diceValues)
 {
 
@@ -34,7 +29,7 @@ void MainWindow::setTurn(int player)
 
 }
 
-void MainWindow::gameover()
+void MainWindow::gameover(int player)
 {
 
 }
@@ -58,11 +53,6 @@ void MainWindow::onNoServerConnection()
 void MainWindow::onDisplayGame()
 {
     qDebug() << "Display: Game";
-}
-
-void MainWindow::onDisplayNoConnection()
-{
-
 }
 
 // Don't change this

@@ -34,7 +34,6 @@ EventHandler::EventHandler(MainWindow* m):
 {
 
     handlers = {
-        {"ROLL", &EventHandler::rollEvent},
         {"SHOW", &EventHandler::showEvent},
         {"BUST", &EventHandler::bustEvent},
         {"TURN", &EventHandler::turnEvent},
@@ -117,12 +116,6 @@ bool EventHandler::handleEvent(Event &event)
     return true;
 }
 
-void EventHandler::rollEvent(parameters &params)
-{
-    dice dice = paramsToDice(params);
-    mainWindow->rollDice(dice);
-}
-
 void EventHandler::showEvent(parameters &params)
 {
     diceValues dice = paramsToDiceValues(params);
@@ -141,9 +134,10 @@ void EventHandler::turnEvent(parameters &params)
     mainWindow->setTurn(player);
 }
 
-void EventHandler::overEvent(parameters &)
+void EventHandler::overEvent(parameters &params)
 {
-    mainWindow->gameover();
+    player player = utils::toInt(params.front());
+    mainWindow->gameover(player);
 }
 
 void EventHandler::roundEvent(parameters &params)
