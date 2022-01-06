@@ -1,24 +1,23 @@
 #include "dicegui.h"
 
-DiceGUI::DiceGUI(int diceNmbr):
-    diceNmbr(diceNmbr)
+DiceGUI::DiceGUI(int row, int nmbr, QWidget* parent):
+    QLabel(parent), row(row), nmbr(nmbr)
 {
-    this->setFixedSize(SIZE, SIZE);
 }
 
 void DiceGUI::disable()
 {
-    disabled = true;
+    enabled = false;
 }
 
 void DiceGUI::enable()
 {
-    disabled = false;
+    enabled = true;
 }
 
 void DiceGUI::mousePressEvent(QMouseEvent* event)
 {
-    if(event->button() == Qt::LeftButton){
-        emit buttonPressed(diceNmbr);
+    if(enabled and event->button() == Qt::LeftButton){
+        emit buttonPressed(row, nmbr);
     }
 }

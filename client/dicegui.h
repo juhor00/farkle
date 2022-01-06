@@ -1,7 +1,6 @@
 #ifndef DICEGUI_H
 #define DICEGUI_H
 
-#include "mainwindow.h"
 #include <QLabel>
 #include <QMouseEvent>
 
@@ -11,23 +10,22 @@ class DiceGUI : public QLabel
     Q_OBJECT
 
 public:
-    DiceGUI(int diceNmbr);
+    DiceGUI(int row, int index, QWidget* parent);
 
     void disable();
     void enable();
 
 signals:
-    void buttonPressed(int diceNmbr);
+    void buttonPressed(int row, int nmbr);
 
 protected:
-    virtual void mousePressEvent(QMouseEvent* event) override;
+    void mousePressEvent(QMouseEvent* event) override;
 
 private:
 
-    const int SIZE = 100;
-
-    int diceNmbr;
-    bool disabled = true;
+    int row;
+    int nmbr;
+    bool enabled = false;
 };
 
 #endif // DICEGUI_H

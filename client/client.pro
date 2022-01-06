@@ -38,3 +38,6 @@ FORMS += \
     mainwindow.ui
 
 LIBS += -lws2_32
+
+RESOURCES += \
+    Resources.qrc
