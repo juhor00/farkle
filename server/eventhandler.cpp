@@ -4,14 +4,6 @@
 EventHandler::EventHandler(Server* s):
     server(s), testClient(INVALID_SOCKET)
 {
-
-    handlers = {
-        {"HOLD", &EventHandler::holdEvent},
-        {"SAVE", &EventHandler::saveEvent},
-        {"TEST", &EventHandler::testEvent},
-    };
-    generators = {"ROLL", "SHOW", "BUST", "TURN", "OVER", "ROUND", "TOTAL"};
-
 }
 
 void EventHandler::removeClient(SOCKET client)
@@ -39,14 +31,6 @@ bool EventHandler::handleEvent(Event &event)
     handler handler = handlers.at(command);
     (this->*handler)(client, parameters);
     return true;
-}
-
-void EventHandler::createRollEvent(dice dice)
-{
-    message msg = "ROLL ";
-    msg += utils::join(dice);
-    Event event(msg);
-    broadcast(event);
 }
 
 void EventHandler::createShowEvent(diceValue diceValues)

@@ -26,7 +26,6 @@ public:
     bool handleEvent(Event& event);
 
     // Create events
-    void createRollEvent(dice dice);
     void createShowEvent(diceValue diceValues);
     void createBustEvent(SOCKET player);
     void createTurnEvent(SOCKET player);
@@ -52,8 +51,14 @@ private:
 
     std::unordered_set<SOCKET> clients;
 
-    std::unordered_map<command, handler> handlers;
-    std::unordered_set<command> generators;
+    std::unordered_map<command, handler> handlers = {
+        {"HOLD", &EventHandler::holdEvent},
+        {"SAVE", &EventHandler::saveEvent},
+        {"TEST", &EventHandler::testEvent},
+    };
+    std::unordered_set<command> generators = {
+        "SHOW", "BUST", "TURN", "OVER", "ROUND", "TOTAL"
+    };
 };
 
 #endif // EVENTHANDLER_H

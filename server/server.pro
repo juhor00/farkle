@@ -8,8 +8,7 @@ SOURCES += \
         ../utilities.cpp \
         eventhandler.cpp \
         main.cpp \
-        server.cpp \
-        thread_example.cpp
+        server.cpp
 
 HEADERS += \
     ../event.h \
