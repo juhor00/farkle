@@ -7,6 +7,7 @@ SOURCES += \
         ../event.cpp \
         ../utilities.cpp \
         eventhandler.cpp \
+        game/game.cpp \
         main.cpp \
         server.cpp
 
@@ -14,6 +15,7 @@ HEADERS += \
     ../event.h \
     ../utilities.h \
     eventhandler.h \
+    game/game.h \
     server.h
 
 DISTFILES += \

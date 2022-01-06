@@ -2,6 +2,7 @@
 #define EVENTHANDLER_H
 
 #include "../event.h"
+#include "game/game.h"
 #include <unordered_map>
 #include <unordered_set>
 #include <algorithm>
@@ -47,6 +48,7 @@ private:
     void broadcast(Event& event);
 
     Server* server;
+    Game* game;
     SOCKET testClient;
 
     std::unordered_set<SOCKET> clients;

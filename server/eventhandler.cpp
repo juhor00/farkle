@@ -2,7 +2,7 @@
 #include "server.h"
 
 EventHandler::EventHandler(Server* s):
-    server(s), testClient(INVALID_SOCKET)
+    server(s), game(new Game(this)), testClient(INVALID_SOCKET)
 {
 }
 
@@ -49,7 +49,7 @@ void EventHandler::createBustEvent(SOCKET player)
 {
     message bust = "BUST ";
     for(auto client : clients){
-        message msg = bust + std::to_string((int) client != player);
+        message msg = bust + (char) (client != player);
         Event event(client, msg);
         sendEvent(event);
     }
@@ -59,7 +59,7 @@ void EventHandler::createTurnEvent(SOCKET player)
 {
     message turn = "TURN ";
     for(auto client : clients){
-        message msg = turn + std::to_string((int) client != player);
+        message msg = turn + (char) (client != player);
         Event event(client, msg);
         sendEvent(event);
     }
