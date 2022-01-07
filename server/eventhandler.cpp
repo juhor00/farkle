@@ -6,6 +6,11 @@ EventHandler::EventHandler(Server* s):
 {
 }
 
+EventHandler::~EventHandler()
+{
+
+}
+
 void EventHandler::removeClient(SOCKET client)
 {
     clients.erase(client);
@@ -33,11 +38,11 @@ bool EventHandler::handleEvent(Event &event)
     return true;
 }
 
-void EventHandler::createShowEvent(diceValue diceValues)
+void EventHandler::createShowEvent(std::unordered_map<std::string, std::string> diceValues)
 {
     message msg = "SHOW ";
 
-    dice dice(diceValues.size());
+    std::unordered_set<std::string> dice(diceValues.size());
     for(auto& pair : diceValues){
         dice.insert(pair.first + ":" + pair.second);
     }
