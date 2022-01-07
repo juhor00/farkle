@@ -26,9 +26,9 @@ public:
     bool handleEvent(Event& event);
 
     // Create events
-    void createShowEvent(std::unordered_map<std::string, std::string> diceValues);
-    void createBustEvent(SOCKET player);
-    void createTurnEvent(SOCKET player);
+    void createShowEvent(diceValues diceValues);
+    void createBustEvent(player player);
+    void createTurnEvent(player player);
     void createOverEvent();
 
 
