@@ -13,7 +13,7 @@ EventHandler::~EventHandler()
 
 void EventHandler::removeClient(SOCKET client)
 {
-    clients.erase(client);
+    clients.erase(std::find(clients.begin(), clients.end(), client));
 }
 
 bool EventHandler::handleEvent(Event &event)
@@ -32,39 +32,40 @@ bool EventHandler::handleEvent(Event &event)
     }
 
     // Handle normally
-    clients.insert(client);
+    clients.push_back(client);
     handler handler = handlers.at(command);
     (this->*handler)(client, parameters);
     return true;
 }
 
-void EventHandler::createShowEvent(std::unordered_map<std::string, std::string> diceValues)
+void EventHandler::createShowEvent(diceValues diceValues)
 {
     message msg = "SHOW ";
 
     std::unordered_set<std::string> dice(diceValues.size());
     for(auto& pair : diceValues){
-        dice.insert(pair.first + ":" + pair.second);
+        std::string dieValue = utils::toString(pair.first) + ":" + utils::toString(pair.second);
+        dice.insert(dieValue);
     }
     Event event(msg);
     broadcast(event);
 }
 
-void EventHandler::createBustEvent(SOCKET player)
+void EventHandler::createBustEvent(player player)
 {
     message bust = "BUST ";
     for(auto client : clients){
-        message msg = bust + (char) (client != player);
+        message msg = bust + (char) (client != clients.at(player));
         Event event(client, msg);
         sendEvent(event);
     }
 }
 
-void EventHandler::createTurnEvent(SOCKET player)
+void EventHandler::createTurnEvent(player player)
 {
     message turn = "TURN ";
     for(auto client : clients){
-        message msg = turn + (char) (client != player);
+        message msg = turn + (char) (client != clients.at(player));
         Event event(client, msg);
         sendEvent(event);
     }

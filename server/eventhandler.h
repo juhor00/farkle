@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <algorithm>
+#include <vector>
 
 using message = std::string;
 
@@ -50,7 +51,7 @@ private:
     Game* game;
     SOCKET testClient;
 
-    std::unordered_set<SOCKET> clients;
+    std::vector<SOCKET> clients;
 
     std::unordered_map<command, handler> handlers = {
         {"HOLD", &EventHandler::holdEvent},
