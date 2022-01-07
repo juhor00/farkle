@@ -13,7 +13,7 @@ EventHandler::~EventHandler()
 
 void EventHandler::removeClient(SOCKET client)
 {
-    clients.erase(std::find(clients.begin(), clients.end(), client));
+    clients.erase(clientIter(client));
 }
 
 bool EventHandler::handleEvent(Event &event)
@@ -81,11 +81,17 @@ void EventHandler::createOverEvent()
 void EventHandler::holdEvent(SOCKET client, parameters &params)
 {
     std::cout << "Client: [" << client << "] Event: [HOLD] Parameters: [" << utils::join(params) << "]" << std::endl;
+    std::unordered_set<std::string> paramsSet(params.begin(), params.end());
+    dice dice = utils::toInt(paramsSet);
+    game->hold(clientIndex(client), dice);
 }
 
 void EventHandler::saveEvent(SOCKET client, parameters &params)
 {
     std::cout << "Client: [" << client << "] Event: [SAVE] Parameters: [" << utils::join(params) << "]" << std::endl;
+    std::unordered_set<std::string> paramsSet(params.begin(), params.end());
+    dice dice = utils::toInt(paramsSet);
+    game->save(clientIndex(client), dice);
 }
 
 void EventHandler::testEvent(SOCKET client, parameters&)
@@ -105,16 +111,6 @@ bool EventHandler::sendEvent(Event &event)
     message msg = command + " " + utils::join(parameters);
     server->sendToClient(client, msg);
     return true;
-}
-
-bool EventHandler::isHandler(command &command)
-{
-    return handlers.find(command) != handlers.end();
-}
-
-bool EventHandler::isGenerator(command &command)
-{
-    return generators.find(command) != generators.end();
 }
 
 void EventHandler::testBroadcast(Event &event)
@@ -148,3 +144,22 @@ void EventHandler::broadcast(Event &event)
     }
 }
 
+bool EventHandler::isHandler(command &command)
+{
+    return handlers.find(command) != handlers.end();
+}
+
+bool EventHandler::isGenerator(command &command)
+{
+    return generators.find(command) != generators.end();
+}
+
+std::vector<SOCKET>::iterator EventHandler::clientIter(SOCKET client)
+{
+    return std::find(clients.begin(), clients.end(), client);
+}
+
+int EventHandler::clientIndex(SOCKET client)
+{
+    return clientIter(client) - clients.begin();
+}

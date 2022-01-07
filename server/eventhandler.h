@@ -41,11 +41,14 @@ private:
     void testEvent(SOCKET client, parameters&);
 
     bool sendEvent(Event& event);
-    bool isHandler(command& command);
-    bool isGenerator(command& command);
-
     void testBroadcast(Event& event);
     void broadcast(Event& event);
+
+
+    bool isHandler(command& command);
+    bool isGenerator(command& command);
+    std::vector<SOCKET>::iterator clientIter(SOCKET client);
+    int clientIndex(SOCKET client);
 
     Server* server;
     Game* game;
