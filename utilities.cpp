@@ -59,7 +59,7 @@ std::string utils::join(const std::vector<std::string> v, const std::string deli
         std::string param = v.at(i);
         result += param;
         if(i != size(v)-1){
-            result += " ";
+            result += delimiter;
         }
     }
     return result;
