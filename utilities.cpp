@@ -72,7 +72,7 @@ std::string utils::join(const std::unordered_set<std::string> s, const std::stri
     return join(r, delimiter);
 }
 
-std::unordered_set<int> utils::toInt(std::unordered_set<std::string> &s)
+std::unordered_set<int> utils::toInt(const std::unordered_set<std::string> &s)
 {
     std::unordered_set<int> i(s.size());
     for(auto& value : s){
@@ -82,7 +82,7 @@ std::unordered_set<int> utils::toInt(std::unordered_set<std::string> &s)
 
 }
 
-std::unordered_map<int, int> utils::toInt(std::unordered_map<std::string, std::string> &s)
+std::unordered_map<int, int> utils::toInt(const std::unordered_map<std::string, std::string> &s)
 {
     std::unordered_map<int, int> i(s.size());
     for(auto& pair: s){
@@ -91,12 +91,12 @@ std::unordered_map<int, int> utils::toInt(std::unordered_map<std::string, std::s
     return i;
 }
 
-int utils::toInt(std::string &s)
+int utils::toInt(const std::string &s)
 {
     return stoi(s);
 }
 
-std::unordered_set<std::string> utils::toString(std::unordered_set<int> &i)
+std::unordered_set<std::string> utils::toString(const std::unordered_set<int> &i)
 {
     std::unordered_set<std::string> s(i.size());
     for( auto& value : i){
@@ -105,7 +105,7 @@ std::unordered_set<std::string> utils::toString(std::unordered_set<int> &i)
     return s;
 }
 
-std::unordered_map<std::string, std::string> utils::toString(std::unordered_map<int, int> &i)
+std::unordered_map<std::string, std::string> utils::toString(const std::unordered_map<int, int> &i)
 {
     std::unordered_map<std::string, std::string> s(i.size());
     for(auto& pair : i){
@@ -114,7 +114,7 @@ std::unordered_map<std::string, std::string> utils::toString(std::unordered_map<
     return s;
 }
 
-std::string utils::toString(int &i)
+std::string utils::toString(const int &i)
 {
     return std::to_string(i);
 }
