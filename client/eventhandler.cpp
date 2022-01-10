@@ -1,5 +1,5 @@
 #include "eventhandler.h"
-#include "mainwindow.h"
+#include "./gui/mainwindow.h"
 
 
 // Return params string to dice (unordered set of ints)

@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include "eventhandler.h"
-#include "dicegui.h"
+#include "dice.h"
 #include <QMainWindow>
 #include <QDebug>
 #include <string>

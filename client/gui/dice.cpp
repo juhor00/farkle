@@ -1,4 +1,4 @@
-#include "dicegui.h"
+#include "dice.h"
 
 DiceGUI::DiceGUI(int row, int nmbr, QWidget* parent):
     QLabel(parent), row(row), nmbr(nmbr)

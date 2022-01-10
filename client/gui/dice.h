@@ -1,5 +1,5 @@
-#ifndef DICEGUI_H
-#define DICEGUI_H
+#ifndef DICE_H
+#define DICE_H
 
 #include <QLabel>
 #include <QMouseEvent>
@@ -28,4 +28,4 @@ private:
     bool enabled = false;
 };
 
-#endif // DICEGUI_H
+#endif // DICE_H

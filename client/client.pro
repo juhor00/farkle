@@ -11,18 +11,18 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs depr
 SOURCES += \
     ../event.cpp \
     ../utilities.cpp \
-    dicegui.cpp \
+    ./gui/dice.cpp \
     eventhandler.cpp \
     main.cpp \
-    mainwindow.cpp \
+    ./gui/mainwindow.cpp \
     server.cpp
 
 HEADERS += \
     ../event.h \
     ../utilities.h \
-    dicegui.h \
+    ./gui/dice.h \
     eventhandler.h \
-    mainwindow.h \
+    ./gui/mainwindow.h \
     server.h
 
 # Default rules for deployment.
@@ -35,9 +35,9 @@ DISTFILES += \
     networkConfig.txt
 
 FORMS += \
-    mainwindow.ui
+    ./gui/mainwindow.ui
 
 LIBS += -lws2_32
 
 RESOURCES += \
-    Resources.qrc
+    ./gui/Resources.qrc
