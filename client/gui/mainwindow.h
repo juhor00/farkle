@@ -54,10 +54,14 @@ private:
     const vector<string> DICE_IMAGES = {"1.png", "2.png", "3.png",
                                                   "4.png", "5.png", "6.png"};
 
-    const int WINDOW_W = 1000;
-    const int WINDOW_H = 700;
+    const int WINDOW_W = 1600;
+    const int WINDOW_H = 900;
 
     const int DICE_SIZE = 80;
+
+    const vector<int> DICE_ROW_Y = {600, 100, 350};
+    const int DICE_ROW_X = 50;
+    const int DICE_GAP = 100;
 
     void initImages();
     void initGUI();
@@ -69,9 +73,11 @@ private:
 
 
     Ui::MainWindow* ui;
-    EventHandler* eventHandler;
+    // EventHandler* eventHandler;
 
     vector<QPixmap> diceImages;
     vector<vector<DiceGUI*>> dices;
+
+    int player = 0;
 };
 #endif // MAINWINDOW_H

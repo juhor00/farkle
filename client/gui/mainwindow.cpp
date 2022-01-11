@@ -3,8 +3,8 @@
 
 MainWindow::MainWindow(QWidget *parent):
     QMainWindow(parent),
-    ui(new Ui::MainWindow),
-    eventHandler(new EventHandler(this))
+    ui(new Ui::MainWindow)
+    // eventHandler(new EventHandler(this))
 {
     ui->setupUi(this);
 
@@ -12,13 +12,13 @@ MainWindow::MainWindow(QWidget *parent):
 
     initImages();
 
-
+    initGUI();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-    delete eventHandler;
+    // delete eventHandler;
 }
 
 void MainWindow::showDice(unordered_map<int, int> &diceValues)
@@ -63,7 +63,34 @@ void MainWindow::onDisplayGame()
 
 void MainWindow::onDiceClicked(int row, int nmbr)
 {
+    DiceGUI* dice = dices.at(row).at(nmbr);
 
+    int index = dice->getIndex();
+    int value = dice->getValue();
+
+    dice->setIndex(-1);
+    dice->setValue(-1);
+    dice->disable();
+    dice->clear();
+
+    int newRow;
+    if(row == 2){
+        newRow = player;
+    } else {
+        newRow = 2;
+    }
+
+    for(auto newDice : dices.at(newRow)){
+        if(newDice->getValue() == -1){
+            dice = newDice;
+            break;
+        }
+    }
+
+    dice->setIndex(index);
+    dice->setValue(value);
+    dice->setPixmap(diceImages.at(value));
+    dice->enable();
 }
 
 void MainWindow::initImages()
@@ -88,9 +115,20 @@ void MainWindow::initGUI()
         rowVctr = {};
         for(int nmbr = 0; nmbr < 6; ++nmbr){
             dice = new DiceGUI(row, nmbr, this);
-            dice->setFixedSize(DICE_SIZE, DICE_SIZE);
+
+            dice->setGeometry(DICE_ROW_X + nmbr * (DICE_SIZE + DICE_GAP),
+                              DICE_ROW_Y.at(row),
+                              DICE_SIZE,
+                              DICE_SIZE);
 
             connect(dice, &DiceGUI::buttonPressed, this, &MainWindow::onDiceClicked);
+
+            if(row == 2){
+                dice->setPixmap(diceImages.at(nmbr));
+                dice->setIndex(nmbr);
+                dice->setValue(nmbr);
+                dice->enable();
+            }
 
             rowVctr.push_back(dice);
         }
@@ -99,18 +137,18 @@ void MainWindow::initGUI()
 }
 
 // Don't change this
-void MainWindow::holdDice(unordered_set<int> &dice)
+void MainWindow::holdDice(unordered_set<int>& dice)
 {
-    eventHandler->createHoldEvent(dice);
+    // eventHandler->createHoldEvent(dice);
 }
 
 // Don't change this
-void MainWindow::saveDice(unordered_set<int> &dice)
+void MainWindow::saveDice(unordered_set<int>& dice)
 {
-    eventHandler->createSaveEvent(dice);
+    // eventHandler->createSaveEvent(dice);
 }
 
 void MainWindow::on_pushButton_clicked()
 {
-    eventHandler->retryConnection();
+    // eventHandler->retryConnection();
 }

@@ -15,6 +15,12 @@ public:
     void disable();
     void enable();
 
+    void setIndex(int index);
+    void setValue(int value);
+
+    int getIndex() const;
+    int getValue() const;
+
 signals:
     void buttonPressed(int row, int nmbr);
 
@@ -23,9 +29,12 @@ protected:
 
 private:
 
-    int row;
-    int nmbr;
+    int row_;
+    int nmbr_;
     bool enabled = false;
+
+    int index_ = -1;
+    int value_ = -1;
 };
 
 #endif // DICE_H
