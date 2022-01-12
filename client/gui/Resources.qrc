@@ -6,5 +6,11 @@
         <file alias="4.png">Resources/4.png</file>
         <file alias="5.png">Resources/5.png</file>
         <file alias="6.png">Resources/6.png</file>
+        <file alias="1d.png">Resources/1d.png</file>
+        <file alias="2d.png">Resources/2d.png</file>
+        <file alias="3d.png">Resources/3d.png</file>
+        <file alias="4d.png">Resources/4d.png</file>
+        <file alias="5d.png">Resources/5d.png</file>
+        <file alias="6d.png">Resources/6d.png</file>
     </qresource>
 </RCC>

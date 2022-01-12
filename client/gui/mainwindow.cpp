@@ -8,7 +8,10 @@ MainWindow::MainWindow(QWidget *parent):
 {
     ui->setupUi(this);
 
-    this->setFixedSize(WINDOW_W, WINDOW_H);
+    this->setMinimumWidth(WIN_MIN_W);
+    this->setMinimumHeight(WIN_MIN_H);
+    this->setGeometry(0, 0, 1600, 900);
+    //this->setFixedSize(WINDOW_W, WINDOW_H);
 
     initImages();
 
@@ -79,7 +82,7 @@ void MainWindow::onDiceClicked(int row, int nmbr)
 
     int newRow;
     if(row == 2){
-        newRow = player;
+        newRow = 0;
     } else {
         newRow = 2;
     }
@@ -93,8 +96,66 @@ void MainWindow::onDiceClicked(int row, int nmbr)
 
     dice->setIndex(index);
     dice->setValue(value);
-    dice->setPixmap(diceImages.at(value));
+    dice->setPixmap(diceImages.at(value).scaledToWidth(diceSize));
     dice->enable();
+}
+
+void MainWindow::resizeEvent(QResizeEvent* event)
+{
+    resizeGUI();
+}
+
+void MainWindow::scaleW(int& variable, int basevalue)
+{
+    variable = basevalue * winW / WIN_NORMAL_W;
+}
+
+void MainWindow::scaleH(int& variable, int basevalue)
+{
+    variable = basevalue * winH / WIN_NORMAL_H;
+}
+
+void MainWindow::resizeGUI()
+{
+    winW = this->width();
+    winH = this->height();
+
+    if(winW * 9 < winH * 16){
+        scaleW(diceSize, DICE_SIZE);
+    } else {
+        scaleH(diceSize, DICE_SIZE);
+    }
+
+    scaleW(diceRowX, DICE_ROW_X);
+    scaleW(diceGap, DICE_GAP);
+
+    int i = 0;
+    for(auto& h : diceRowY){
+        scaleH(h, DICE_ROW_Y.at(i));
+        ++i;
+    }
+
+    drawGUI();
+}
+
+void MainWindow::drawGUI()
+{
+    DiceGUI* dice;
+    for(int row = 0; row < 3; ++row){
+        for(int nmbr = 0; nmbr < 6; ++nmbr){
+            dice = dices.at(row).at(nmbr);
+
+            dice->setGeometry(diceRowX + nmbr * (diceSize + diceSize),
+                              diceRowY.at(row),
+                              diceSize,
+                              diceSize);
+
+            if(not dice->pixmap().isNull()){
+                QPixmap pic = diceImages.at(dice->getValue());
+                dice->setPixmap(pic.scaledToWidth(diceSize));
+            }
+        }
+    }
 }
 
 void MainWindow::initImages()
@@ -106,7 +167,7 @@ void MainWindow::initImages()
         fileName = prefix + DICE_IMAGES.at(i);
         QPixmap dice(QString::fromStdString(fileName));
 
-        dice = dice.scaled(DICE_SIZE, DICE_SIZE);
+        dice = dice.scaled(diceSize, diceSize);
         diceImages.push_back(dice);
     }
 }
@@ -120,15 +181,10 @@ void MainWindow::initGUI()
         for(int nmbr = 0; nmbr < 6; ++nmbr){
             dice = new DiceGUI(row, nmbr, this);
 
-            dice->setGeometry(DICE_ROW_X + nmbr * (DICE_SIZE + DICE_GAP),
-                              DICE_ROW_Y.at(row),
-                              DICE_SIZE,
-                              DICE_SIZE);
-
             connect(dice, &DiceGUI::buttonPressed, this, &MainWindow::onDiceClicked);
 
             if(row == 2){
-                dice->setPixmap(diceImages.at(nmbr));
+                dice->setPixmap(diceImages.at(nmbr).scaledToWidth(diceSize));
                 dice->setIndex(nmbr);
                 dice->setValue(nmbr);
                 dice->enable();
@@ -138,6 +194,10 @@ void MainWindow::initGUI()
         }
         dices.push_back(rowVctr);
     }
+
+    rollDice = new QPushButton(this);
+
+    resizeGUI();
 }
 
 // Don't change this
