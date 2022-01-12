@@ -13,24 +13,26 @@ Game::~Game()
 
 }
 
-bool Game::hold(player player, dice /*dice*/)
+bool Game::hold(player player, dice dice)
 {
     if(not isInTurn(player)){
         return false;
     }
 
     // CODE HERE
+    (void) dice;
 
     return true;
 }
 
-bool Game::save(player player, dice /*dice*/)
+bool Game::save(player player, dice dice)
 {
     if(not isInTurn(player)){
         return false;
     }
 
     // CODE HERE
+    (void) dice;
 
     return true;
 }
@@ -45,19 +47,19 @@ bool Game::isInTurn(player player)
     return player == inTurn;
 }
 
-void Game::showEvent(diceValues /*dice*/)
+void Game::showEvent(diceValues dice)
 {
-
+    (void) dice;
 }
 
-void Game::bustEvent(player /*player*/)
+void Game::bustEvent(player player)
 {
-
+    (void) player;
 }
 
-void Game::turnEvent(player /*player*/)
+void Game::turnEvent(player player)
 {
-
+    (void) player;
 }
 
 void Game::overEvent()
