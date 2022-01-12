@@ -39,9 +39,10 @@ private:
     bool addClient(SOCKET client);
     bool removeClient(SOCKET& client);
     bool hasClient(SOCKET& client);
+    int getClientCount();
 
-    void stopListen();
     void acceptClients();
+    void stopListen();
     void handle(SOCKET client);
 
     EventHandler* eventHandler;
