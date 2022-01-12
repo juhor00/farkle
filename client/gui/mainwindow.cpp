@@ -23,31 +23,35 @@ MainWindow::~MainWindow()
 
 void MainWindow::showDice(unordered_map<int, int> &diceValues)
 {
-
+    //  VOID ONLY FOR REMOVING WARNINGS
+    //  REMOVE WHEN ACTUALLY IMPLEMENTING
+    (void)diceValues;
 }
 
 void MainWindow::bust(int player)
 {
-
+    (void)player;
 }
 void MainWindow::setTurn(int player)
 {
-
+    (void)player;
 }
 
 void MainWindow::gameover(int player)
 {
-
+    (void)player;
 }
 
 void MainWindow::setRoundPoints(int player, int points)
 {
-
+    (void)player;
+    (void)points;
 }
 
 void MainWindow::setTotalPoints(int player, int points)
 {
-
+    (void)player;
+    (void)points;
 }
 
 void MainWindow::onNoServerConnection()
@@ -140,12 +144,14 @@ void MainWindow::initGUI()
 void MainWindow::holdDice(unordered_set<int>& dice)
 {
     // eventHandler->createHoldEvent(dice);
+    (void)dice;
 }
 
 // Don't change this
 void MainWindow::saveDice(unordered_set<int>& dice)
 {
     // eventHandler->createSaveEvent(dice);
+    (void)dice;
 }
 
 void MainWindow::on_pushButton_clicked()
