@@ -103,13 +103,9 @@ bool Server::broadcast(const std::string& msg)
 
 bool Server::addClient(SOCKET client)
 {
-    if(getClientCount() >= 2){
-        return false;
-    }
     ClientSockets.insert(client);
     std::thread t (&Server::handle, this, client);
     t.detach();
-    return true;
 }
 
 bool Server::removeClient(SOCKET &client)
@@ -135,11 +131,6 @@ bool Server::hasClient(SOCKET &client)
     return (std::find(ClientSockets.begin(), ClientSockets.end(), client) != ClientSockets.end());
 }
 
-int Server::getClientCount()
-{
-    return ClientSockets.size();
-}
-
 void Server::acceptClients()
 {
     while(true){
@@ -152,31 +143,14 @@ void Server::acceptClients()
             std::cout << "Duplicate client " << ClientSocket << std::endl;
             continue;
         } else {
-            if(addClient(ClientSocket)){
-                // New successful connection
-                std::cout << "Added new client " << ClientSocket << std::endl;
+            addClient(ClientSocket);
+            // New successful connection
+            std::cout << "Added new client " << ClientSocket << std::endl;
 
-                //
-                // Join message here
-                //
-                sendToClient(ClientSocket, "Hello player!");
-
-            } else {
-                // Connection denied
-                std::cout << "Game full. Client " << ClientSocket << " must wait" << std::endl;
-
-                //
-                // Start connection
-                //
-
-                //
-                // Error message here
-                //
-
-                //
-                // Add to wait list
-                //
-            }
+            //
+            // Join message here
+            //
+            sendToClient(ClientSocket, "Hello player!");
 
         }
     }
