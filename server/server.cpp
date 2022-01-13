@@ -103,9 +103,13 @@ bool Server::broadcast(const std::string& msg)
 
 bool Server::addClient(SOCKET client)
 {
+    if(hasClient(client)){
+        return false;
+    }
     ClientSockets.insert(client);
     std::thread t (&Server::handle, this, client);
     t.detach();
+    return true;
 }
 
 bool Server::removeClient(SOCKET &client)

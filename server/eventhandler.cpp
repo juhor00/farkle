@@ -2,18 +2,25 @@
 #include "server.h"
 
 EventHandler::EventHandler(Server* s):
-    server(s), game(new Game(this)), testClient(INVALID_SOCKET)
+    server_(s),
+    latestGame_(new Game(this)),
+    clientsByGame_({}),
+    testClient_(INVALID_SOCKET)
 {
+    clientsByGame_.insert({latestGame_, {}});
 }
 
 EventHandler::~EventHandler()
 {
-
+    for(auto& [game, clients] : clientsByGame_){
+        delete game;
+    }
+    delete server_;
 }
 
 void EventHandler::removeClient(SOCKET client)
 {
-    clients.erase(clientIter(client));
+    clients_.erase(client);
 }
 
 bool EventHandler::handleEvent(Event &event)
@@ -22,37 +29,48 @@ bool EventHandler::handleEvent(Event &event)
     SOCKET client = event.getClient();
     command command = event.getCommand();
     parameters parameters = event.getParameters();
-    if(client == testClient){
+
+    //
+    // TESTING ONLY
+    //
+    if(client == testClient_){
         // Pass command to others
         testBroadcast(event);
         return true;
     }
-    else if(not isHandler(command)){
+
+    if(not isHandler(command)){
         return false;
     }
 
+    if(not hasClient(client)){
+        addClient(client);
+    }
+
     // Handle normally
-    clients.push_back(client);
-    handler handler = handlers.at(command);
+    handler handler = handlers_.at(command);
     (this->*handler)(client, parameters);
     return true;
 }
 
-void EventHandler::createShowEvent(diceValues diceValues)
+void EventHandler::createShowEvent(Game* game, diceValues diceValues)
 {
-    message msg = "SHOW ";
+    auto clients = getClientsByGame(game);
 
+    message msg = "SHOW ";
     std::unordered_set<std::string> dice(diceValues.size());
     for(auto& pair : diceValues){
         std::string dieValue = utils::toString(pair.first) + ":" + utils::toString(pair.second);
         dice.insert(dieValue);
     }
     Event event(msg);
-    broadcast(event);
+    broadcast(clients, event);
 }
 
-void EventHandler::createBustEvent(player player)
+void EventHandler::createBustEvent(Game* game, player player)
 {
+    auto clients = getClientsByGame(game);
+
     message bust = "BUST ";
     for(auto client : clients){
         message msg = bust + (char) (client != clients.at(player));
@@ -61,8 +79,10 @@ void EventHandler::createBustEvent(player player)
     }
 }
 
-void EventHandler::createTurnEvent(player player)
+void EventHandler::createTurnEvent(Game* game, player player)
 {
+    auto clients = getClientsByGame(game);
+
     message turn = "TURN ";
     for(auto client : clients){
         message msg = turn + (char) (client != clients.at(player));
@@ -71,10 +91,11 @@ void EventHandler::createTurnEvent(player player)
     }
 }
 
-void EventHandler::createOverEvent()
+void EventHandler::createOverEvent(Game* game)
 {
+    auto clients = getClientsByGame(game);
     Event event("OVER");
-    broadcast(event);
+    broadcast(clients, event);
 }
 
 
@@ -83,7 +104,9 @@ void EventHandler::holdEvent(SOCKET client, parameters &params)
     std::cout << "Client: [" << client << "] Event: [HOLD] Parameters: [" << utils::join(params) << "]" << std::endl;
     std::unordered_set<std::string> paramsSet(params.begin(), params.end());
     dice dice = utils::toInt(paramsSet);
-    game->hold(clientIndex(client), dice);
+    Game* game = getGameByClient(client);
+    auto clients = getClientsByGame(game);
+    game->hold(getIndex(clients, client), dice);
 }
 
 void EventHandler::saveEvent(SOCKET client, parameters &params)
@@ -91,12 +114,14 @@ void EventHandler::saveEvent(SOCKET client, parameters &params)
     std::cout << "Client: [" << client << "] Event: [SAVE] Parameters: [" << utils::join(params) << "]" << std::endl;
     std::unordered_set<std::string> paramsSet(params.begin(), params.end());
     dice dice = utils::toInt(paramsSet);
-    game->save(clientIndex(client), dice);
+    Game* game = getGameByClient(client);
+    auto clients = getClientsByGame(game);
+    game->save(getIndex(clients, client), dice);
 }
 
 void EventHandler::testEvent(SOCKET client, parameters&)
 {
-    testClient = client;
+    testClient_ = client;
     std::cout << "Client: [" << client << "] Event: [TEST]" << std::endl;
 }
 
@@ -109,7 +134,7 @@ bool EventHandler::sendEvent(Event &event)
     parameters parameters = event.getParameters();
     SOCKET client = event.getClient();
     message msg = command + " " + utils::join(parameters);
-    server->sendToClient(client, msg);
+    server_->sendToClient(client, msg);
     return true;
 }
 
@@ -119,15 +144,15 @@ void EventHandler::testBroadcast(Event &event)
     command command = event.getCommand();
     parameters parameters = event.getParameters();
 
-    std::unordered_set<std::string> broadcastTo(clients.size());
-    for(auto c : clients){
+    std::unordered_set<std::string> broadcastTo(clients_.size());
+    for(auto c : clients_){
         if(c != sender){
             broadcastTo.insert(std::to_string(c));
         }
     }
     std::cout << "Broadcasting to: " << utils::join(broadcastTo) << std::endl;
 
-    for(SOCKET sendTo : clients){
+    for(SOCKET sendTo : clients_){
         if(sendTo != sender){
             Event eventToSend(sendTo, command, parameters);
             sendEvent(eventToSend);
@@ -138,6 +163,14 @@ void EventHandler::testBroadcast(Event &event)
 void EventHandler::broadcast(Event &event)
 {
     std::cout << "Broadcasting" << std::endl;
+    for(auto client : clients_){
+        event.setClient(client);
+        sendEvent(event);
+    }
+}
+
+void EventHandler::broadcast(std::vector<SOCKET> clients, Event &event)
+{
     for(auto client : clients){
         event.setClient(client);
         sendEvent(event);
@@ -146,20 +179,48 @@ void EventHandler::broadcast(Event &event)
 
 bool EventHandler::isHandler(command &command)
 {
-    return handlers.find(command) != handlers.end();
+    return handlers_.find(command) != handlers_.end();
 }
 
 bool EventHandler::isGenerator(command &command)
 {
-    return generators.find(command) != generators.end();
+    return generators_.find(command) != generators_.end();
 }
 
-std::vector<SOCKET>::iterator EventHandler::clientIter(SOCKET client)
+bool EventHandler::hasClient(SOCKET client)
 {
-    return std::find(clients.begin(), clients.end(), client);
+    return std::find(clients_.begin(), clients_.end(), client) != clients_.end();
 }
 
-int EventHandler::clientIndex(SOCKET client)
+void EventHandler::addClient(SOCKET client)
 {
-    return clientIter(client) - clients.begin();
+    clients_.insert(client);
+    auto clients = getClientsByGame(latestGame_);
+    if(clients.size() >= 2){
+        latestGame_ = new Game(this);
+        clients = {};
+    }
+    clients.push_back(client);
+    clientsByGame_.at(latestGame_) = clients;
+}
+
+int EventHandler::getIndex(std::vector<SOCKET> clients, SOCKET client)
+{
+    return std::find(clients.begin(), clients.end(), client) - clients.begin();
+}
+
+Game *EventHandler::getGameByClient(SOCKET client)
+{
+    for(auto& [game, clients] : clientsByGame_){
+        // Game has client
+        if(std::find(clients.begin(), clients.end(), client) != clients.end()){
+            return game;
+        }
+    }
+    return nullptr;
+}
+
+std::vector<SOCKET> EventHandler::getClientsByGame(Game *game)
+{
+    return clientsByGame_.at(game);
 }

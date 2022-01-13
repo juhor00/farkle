@@ -27,10 +27,10 @@ public:
     bool handleEvent(Event& event);
 
     // Create events
-    void createShowEvent(diceValues diceValues);
-    void createBustEvent(player player);
-    void createTurnEvent(player player);
-    void createOverEvent();
+    void createShowEvent(Game* game, diceValues diceValues);
+    void createBustEvent(Game* game, player player);
+    void createTurnEvent(Game* game, player player);
+    void createOverEvent(Game* game);
 
 
 private:
@@ -40,28 +40,37 @@ private:
     void saveEvent(SOCKET client, parameters& params);
     void testEvent(SOCKET client, parameters&);
 
+    // Event sending
     bool sendEvent(Event& event);
     void testBroadcast(Event& event);
     void broadcast(Event& event);
+    void broadcast(std::vector<SOCKET> clients, Event& event);
 
-
+    // Other event methods
     bool isHandler(command& command);
     bool isGenerator(command& command);
-    std::vector<SOCKET>::iterator clientIter(SOCKET client);
-    int clientIndex(SOCKET client);
 
-    Server* server;
-    Game* game;
-    SOCKET testClient;
+    // Game methods
+    bool hasClient(SOCKET client);
+    void addClient(SOCKET client);
+    int getIndex(std::vector<SOCKET> clients, SOCKET client);
+    Game *getGameByClient(SOCKET client);
+    std::vector<SOCKET> getClientsByGame(Game* game);
 
-    std::vector<SOCKET> clients;
+    // Attributes
+    Server* server_;
+    Game* latestGame_;
+    std::unordered_map<Game*, std::vector<SOCKET>> clientsByGame_;
+    SOCKET testClient_;
+    std::unordered_set<SOCKET> clients_;
 
-    std::unordered_map<command, handler> handlers = {
+    // Event attributes
+    std::unordered_map<command, handler> handlers_ = {
         {"HOLD", &EventHandler::holdEvent},
         {"SAVE", &EventHandler::saveEvent},
         {"TEST", &EventHandler::testEvent},
     };
-    std::unordered_set<command> generators = {
+    std::unordered_set<command> generators_ = {
         "SHOW", "BUST", "TURN", "OVER", "ROUND", "TOTAL"
     };
 };
