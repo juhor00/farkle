@@ -20,6 +20,13 @@ EventHandler::~EventHandler()
 
 void EventHandler::removeClient(SOCKET client)
 {
+    Game* game = getGameByClient(client);
+    std::vector<SOCKET> clients = getClientsByGame(game);
+    if(clients.size() == 1){
+        clientsByGame_.erase(game);
+        delete game;
+    }
+    clients.erase(std::find(clients.begin(), clients.end(), client));
     clients_.erase(client);
 }
 
@@ -197,11 +204,16 @@ void EventHandler::addClient(SOCKET client)
     clients_.insert(client);
     auto clients = getClientsByGame(latestGame_);
     if(clients.size() >= 2){
+        std::cout << "Creating new game" << std::endl;
         latestGame_ = new Game(this);
+        clientsByGame_.insert({latestGame_, {}});
         clients = {};
     }
     clients.push_back(client);
     clientsByGame_.at(latestGame_) = clients;
+    if(clients.size() == 2){
+        latestGame_->start();
+    }
 }
 
 int EventHandler::getIndex(std::vector<SOCKET> clients, SOCKET client)

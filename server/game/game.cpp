@@ -37,6 +37,11 @@ bool Game::save(player player, dice dice)
     return true;
 }
 
+void Game::start()
+{
+
+}
+
 void Game::changeTurn()
 {
     inTurn = (inTurn + 1) % 2;

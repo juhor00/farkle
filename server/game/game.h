@@ -20,6 +20,9 @@ public:
     bool hold(player player, dice dice);
     bool save(player player, dice dice);
 
+    // Start the game
+    // Called by event handler
+    void start();
 
 private:
 
