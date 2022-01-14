@@ -38,6 +38,8 @@ private:
     // Handlers
     void holdEvent(SOCKET client, parameters& params);
     void saveEvent(SOCKET client, parameters& params);
+    void clickEvent(SOCKET client, parameters& params);
+
     void testEvent(SOCKET client, parameters&);
 
     // Event sending
@@ -68,10 +70,11 @@ private:
     std::unordered_map<command, handler> handlers_ = {
         {"HOLD", &EventHandler::holdEvent},
         {"SAVE", &EventHandler::saveEvent},
+        {"CLICK", &EventHandler::clickEvent},
         {"TEST", &EventHandler::testEvent},
     };
     std::unordered_set<command> generators_ = {
-        "SHOW", "BUST", "TURN", "OVER", "ROUND", "TOTAL"
+        "CLICK", "SHOW", "BUST", "TURN", "OVER", "ROUND", "TOTAL"
     };
 };
 

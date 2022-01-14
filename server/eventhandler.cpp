@@ -126,6 +126,20 @@ void EventHandler::saveEvent(SOCKET client, parameters &params)
     game->save(getIndex(clients, client), dice);
 }
 
+void EventHandler::clickEvent(SOCKET client, parameters &params)
+{
+    std::cout << "Client: [" << client << "] Event: [CLICK] Parameters: [" << utils::join(params) << "]" << std::endl;
+    Game* game = getGameByClient(client);
+    auto clients = getClientsByGame(game);
+    for(auto sendTo : clients){
+        if(client != sendTo){
+            Event event(sendTo, "CLICK", params);
+            sendEvent(event);
+            return;
+        }
+    }
+}
+
 void EventHandler::testEvent(SOCKET client, parameters&)
 {
     testClient_ = client;
