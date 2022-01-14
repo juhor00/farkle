@@ -53,6 +53,7 @@ private:
     bool isGenerator(command& command);
 
     // Game methods
+    void createNewGame();
     bool hasClient(SOCKET client);
     void addClient(SOCKET client);
     int getIndex(std::vector<SOCKET> clients, SOCKET client);

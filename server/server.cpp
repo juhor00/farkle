@@ -64,10 +64,10 @@ Server::Server(const std::string& port):
 Server::~Server()
 {
     // Close sockets
-    closesocket(ListenSocket);
     for(SOCKET ClientSocket : ClientSockets){
         removeClient(ClientSocket);
     }
+    closesocket(ListenSocket);
     WSACleanup();
     delete eventHandler;
 }
@@ -124,6 +124,7 @@ bool Server::removeClient(SOCKET &client)
             closesocket(client);
         }
         ClientSockets.erase(client);
+        std::cout << "Client " << client << " closed connection" << std::endl;
         return true;
     }
     return false;

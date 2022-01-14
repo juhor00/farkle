@@ -15,6 +15,9 @@ EventHandler::~EventHandler()
     for(auto& [game, clients] : clientsByGame_){
         delete game;
     }
+    if(latestGame_ != nullptr){
+        delete latestGame_;
+    }
     delete server_;
 }
 
@@ -28,6 +31,9 @@ void EventHandler::removeClient(SOCKET client)
     }
     clients.erase(std::find(clients.begin(), clients.end(), client));
     clients_.erase(client);
+    if(clientsByGame_.empty()){
+        createNewGame();
+    }
 }
 
 bool EventHandler::handleEvent(Event &event)
@@ -38,18 +44,30 @@ bool EventHandler::handleEvent(Event &event)
     parameters parameters = event.getParameters();
 
     //
-    // TESTING ONLY
+    // TESTING BEGIN
     //
+
+    // Receive from test client
     if(client == testClient_){
         // Pass command to others
         testBroadcast(event);
         return true;
     }
 
+    // Send to test client
+    if(testClient_ != INVALID_SOCKET){
+        std::cout << "sending to test client" << std::endl;
+        event.setClient(testClient_);
+        sendEvent(event);
+    }
+
+    //
+    // TESTING END
+    //
+
     if(not isHandler(command)){
         return false;
     }
-
     if(not hasClient(client)){
         addClient(client);
     }
@@ -208,6 +226,13 @@ bool EventHandler::isGenerator(command &command)
     return generators_.find(command) != generators_.end();
 }
 
+void EventHandler::createNewGame()
+{
+    std::cout << "Creating new game" << std::endl;
+    latestGame_ = new Game(this);
+    clientsByGame_.insert({latestGame_, {}});
+}
+
 bool EventHandler::hasClient(SOCKET client)
 {
     return std::find(clients_.begin(), clients_.end(), client) != clients_.end();
@@ -218,9 +243,7 @@ void EventHandler::addClient(SOCKET client)
     clients_.insert(client);
     auto clients = getClientsByGame(latestGame_);
     if(clients.size() >= 2){
-        std::cout << "Creating new game" << std::endl;
-        latestGame_ = new Game(this);
-        clientsByGame_.insert({latestGame_, {}});
+        createNewGame();
         clients = {};
     }
     clients.push_back(client);
