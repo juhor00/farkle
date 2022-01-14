@@ -3,7 +3,8 @@
 
 
 Game::Game(EventHandler *eventHandler):
-    eventHandler(eventHandler), inTurn(0)
+    eventHandler(eventHandler),
+    inTurn(0)
 {
 
 }
@@ -15,6 +16,7 @@ Game::~Game()
 
 bool Game::hold(player player, dice dice)
 {
+    // Only the player in turn can hold dice
     if(not isInTurn(player)){
         return false;
     }
@@ -27,6 +29,7 @@ bool Game::hold(player player, dice dice)
 
 bool Game::save(player player, dice dice)
 {
+    // Only the player in turn can save dice
     if(not isInTurn(player)){
         return false;
     }
@@ -54,20 +57,20 @@ bool Game::isInTurn(player player)
 
 void Game::showEvent(diceValues dice)
 {
-    (void) dice;
+    eventHandler->createShowEvent(this, dice);
 }
 
 void Game::bustEvent(player player)
 {
-    (void) player;
+    eventHandler->createBustEvent(this, player);
 }
 
 void Game::turnEvent(player player)
 {
-    (void) player;
+    eventHandler->createTurnEvent(this, player);
 }
 
 void Game::overEvent()
 {
-
+    eventHandler->createOverEvent(this);
 }
