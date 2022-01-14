@@ -32,6 +32,7 @@ public:
 public slots:
 
     // Game events
+    void clickDice(int dice);
     void showDice(unordered_map<int, int>& diceValues);
     void bust(int player);
     void setTurn(int player);

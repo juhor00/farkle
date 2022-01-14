@@ -24,6 +24,11 @@ MainWindow::~MainWindow()
     // delete eventHandler;
 }
 
+void MainWindow::clickDice(int dice)
+{
+    (void)dice;
+}
+
 void MainWindow::showDice(unordered_map<int, int> &diceValues)
 {
     //  VOID ONLY FOR REMOVING WARNINGS

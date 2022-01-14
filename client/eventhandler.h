@@ -32,6 +32,7 @@ public:
     // Create game events
     void createSaveEvent(dice dice);
     void createHoldEvent(dice dice);
+    void createClickEvent(dice dice);
 
     // General event handlers
     void noConnectionEvent();
@@ -43,6 +44,7 @@ public:
 private:
 
     // Game event handlers
+    void clickEvent(parameters& params);
     void showEvent(parameters& params);
     void bustEvent(parameters& params);
     void turnEvent(parameters& params);
@@ -59,8 +61,16 @@ private:
     std::string port_;
     MainWindow* mainWindow;
 
-    std::unordered_set<command> generators;
-    std::unordered_map<command, handler> handlers;
+    std::unordered_set<command> generators = {"HOLD", "SAVE", "CLICK"};
+    std::unordered_map<command, handler> handlers = {
+        {"CLICK", &EventHandler::clickEvent},
+        {"SHOW", &EventHandler::showEvent},
+        {"BUST", &EventHandler::bustEvent},
+        {"TURN", &EventHandler::turnEvent},
+        {"OVER", &EventHandler::overEvent},
+        {"ROUND", &EventHandler::roundEvent},
+        {"TOTAL", &EventHandler::totalEvent},
+               };
 };
 
 #endif // EVENTHANDLER_H

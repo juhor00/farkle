@@ -32,18 +32,6 @@ playerScore paramsToPlayerScores(parameters &params)
 EventHandler::EventHandler(MainWindow* m):
     mainWindow(m)
 {
-
-    handlers = {
-        {"SHOW", &EventHandler::showEvent},
-        {"BUST", &EventHandler::bustEvent},
-        {"TURN", &EventHandler::turnEvent},
-        {"OVER", &EventHandler::overEvent},
-        {"ROUND", &EventHandler::roundEvent},
-        {"TOTAL", &EventHandler::totalEvent},
-               };
-
-    generators = {"HOLD", "SAVE"};
-
     // Network settings
     std::string settingsFile = "networkConfig.txt";
     auto settings = utils::settingsParser(settingsFile);
@@ -97,6 +85,14 @@ void EventHandler::createHoldEvent(dice dice)
     sendEvent(event);
 }
 
+void EventHandler::createClickEvent(dice dice)
+{
+    auto params = utils::toString(dice);
+    message msg = "CLICK " + utils::join(params);
+    Event event(msg);
+    sendEvent(event);
+}
+
 void EventHandler::noConnectionEvent()
 {
     mainWindow->onNoServerConnection();
@@ -114,6 +110,14 @@ bool EventHandler::handleEvent(Event &event)
     (this->*handler)(parameters);
 
     return true;
+}
+
+void EventHandler::clickEvent(parameters &params)
+{
+    dice dice = paramsToDice(params);
+    for(int die : dice){
+        mainWindow->clickDice(die);
+    }
 }
 
 void EventHandler::showEvent(parameters &params)
