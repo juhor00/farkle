@@ -58,6 +58,9 @@ class Gui(tk.Tk):
         self.after(0, new_thread(target=self.client.receive))
         self.client.send(bytes("TEST", encoding="UTF-8"))
 
+    def __del__(self):
+        del self.client
+
     def send_event(self, _):
         msg = self.input_["text"]
         self.client.send(bytes(msg, encoding="UTF-8"))
