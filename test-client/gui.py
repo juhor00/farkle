@@ -21,6 +21,7 @@ class Gui(tk.Tk):
         self.client = Client(self)
         self.widgets = []
         self.title("Farkle commands")
+        self.protocol("WM_DELETE_WINDOW", self.__del__)
 
         self.text_ = tk.Text(self, height=5, width=52, state="disable")
         self.input_ = tk.Label(self)
@@ -48,7 +49,7 @@ class Gui(tk.Tk):
         tk.Button(self, text="Send", command=lambda: self.send_event(None)).grid(columnspan=COLSPAN)
 
         # Close
-        tk.Button(self, text="Close", command=self.destroy).grid(columnspan=COLSPAN)
+        tk.Button(self, text="Close", command=self.__del__).grid(columnspan=COLSPAN)
 
         # Binds
         self.bind('<Return>', self.send_event)
@@ -59,7 +60,9 @@ class Gui(tk.Tk):
         self.client.send(bytes("TEST", encoding="UTF-8"))
 
     def __del__(self):
-        del self.client
+        print("GUI del")
+        self.client.disconnect()
+        self.destroy()
 
     def send_event(self, _):
         msg = self.input_["text"]
