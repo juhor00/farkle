@@ -116,7 +116,8 @@ bool Server::removeClient(SOCKET &client)
 {
     int iResult;
     if(hasClient(client)){
-        eventHandler->removeClient(client);
+        Event event(client, "LEAVE");
+        eventHandler->handleEvent(event);
         iResult = shutdown(client, SD_BOTH);
         if(iResult == SOCKET_ERROR){
 

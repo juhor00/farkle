@@ -22,8 +22,6 @@ public:
     EventHandler(Server* server);
     ~EventHandler();
 
-    void removeClient(SOCKET client);
-
     bool handleEvent(Event& event);
 
     // Create events
@@ -39,6 +37,8 @@ private:
     void holdEvent(SOCKET client, parameters& params);
     void saveEvent(SOCKET client, parameters& params);
     void clickEvent(SOCKET client, parameters& params);
+    void joinEvent(SOCKET client, parameters&);
+    void leaveEvent(SOCKET client, parameters&);
 
     void testEvent(SOCKET client, parameters&);
 
@@ -56,6 +56,7 @@ private:
     void createNewGame();
     bool hasClient(SOCKET client);
     void addClient(SOCKET client);
+    void removeClient(SOCKET client);
     int getIndex(std::vector<SOCKET> clients, SOCKET client);
     Game *getGameByClient(SOCKET client);
     std::vector<SOCKET> getClientsByGame(Game* game);
@@ -72,6 +73,8 @@ private:
         {"HOLD", &EventHandler::holdEvent},
         {"SAVE", &EventHandler::saveEvent},
         {"CLICK", &EventHandler::clickEvent},
+        {"JOIN", &EventHandler::joinEvent},
+        {"LEAVE", &EventHandler::leaveEvent},
         {"TEST", &EventHandler::testEvent},
     };
     std::unordered_set<command> generators_ = {
