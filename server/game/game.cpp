@@ -6,12 +6,12 @@ Game::Game(EventHandler *eventHandler):
     eventHandler(eventHandler),
     inTurn(0)
 {
-
+    std::cout << "Created game " << this << std::endl;
 }
 
 Game::~Game()
 {
-
+    std::cout << "Deleted game " << this << std::endl;
 }
 
 bool Game::hold(player player, dice dice)
@@ -42,7 +42,7 @@ bool Game::save(player player, dice dice)
 
 void Game::start()
 {
-    std::cout << "Starting the game" << std::endl;
+    std::cout << "Started game " << this << std::endl;
 }
 
 void Game::changeTurn()

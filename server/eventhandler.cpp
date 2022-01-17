@@ -256,7 +256,6 @@ bool EventHandler::isGenerator(command &command)
 
 void EventHandler::createNewGame()
 {
-    std::cout << "Creating new game" << std::endl;
     latestGame_ = new Game(this);
     clientsByGame_.insert({latestGame_, {}});
 }
