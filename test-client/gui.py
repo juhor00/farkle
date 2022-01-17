@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from client import Client
 import threading
+import sys
 
 
 ROWLEN = 3
@@ -14,7 +15,7 @@ def new_thread(target, daemon=True, args=()):
 
 
 class Gui(tk.Tk):
-    def __init__(self):
+    def __init__(self, testing: bool):
         super().__init__()
         self.resizable(False, False)
 
@@ -57,7 +58,8 @@ class Gui(tk.Tk):
         self.generate()
 
         self.after(0, new_thread(target=self.client.receive))
-        self.client.send(bytes("TEST", encoding="UTF-8"))
+        if testing:
+            self.client.send(bytes("TEST", encoding="UTF-8"))
 
     def __del__(self):
         print("GUI del")
@@ -203,5 +205,18 @@ class PlayerSelection(tk.Frame):
 
 
 if __name__ == '__main__':
-    gui = Gui()
+    args = sys.argv[1:]
+    print(args)
+    try:
+        args = list(map(int, args))
+        if len(args) == 0:
+            testing = True
+        else:
+            testing = bool(args[0])
+    except TypeError:
+        print("Type error")
+        testing = True
+
+    print(testing)
+    gui = Gui(testing)
     gui.mainloop()
