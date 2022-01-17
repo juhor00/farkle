@@ -107,6 +107,7 @@ bool Server::addClient(SOCKET client)
         return false;
     }
     ClientSockets.insert(client);
+    eventHandler->addClient(client);
     std::thread t (&Server::handle, this, client);
     t.detach();
     return true;
@@ -116,8 +117,7 @@ bool Server::removeClient(SOCKET &client)
 {
     int iResult;
     if(hasClient(client)){
-        Event event(client, "LEAVE");
-        eventHandler->handleEvent(event);
+        eventHandler->removeClient(client);
         iResult = shutdown(client, SD_BOTH);
         if(iResult == SOCKET_ERROR){
 

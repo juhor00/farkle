@@ -42,7 +42,7 @@ bool Game::save(player player, dice dice)
 
 void Game::start()
 {
-
+    std::cout << "Starting the game" << std::endl;
 }
 
 void Game::changeTurn()

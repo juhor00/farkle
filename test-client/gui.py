@@ -60,8 +60,6 @@ class Gui(tk.Tk):
         self.after(0, new_thread(target=self.client.receive))
         if testing:
             self.client.send(bytes("TEST", encoding="UTF-8"))
-        else:
-            self.client.send(bytes("JOIN", encoding="UTF-8"))
 
     def __del__(self):
         print("GUI del")
