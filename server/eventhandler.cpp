@@ -1,8 +1,7 @@
 #include "eventhandler.h"
 #include "server.h"
 
-EventHandler::EventHandler(Server* s):
-    server_(s),
+EventHandler::EventHandler():
     latestGame_(new Game(this)),
     clientsByGame_({}),
     testClient_(INVALID_SOCKET)
@@ -18,7 +17,6 @@ EventHandler::~EventHandler()
     if(latestGame_ != nullptr){
         delete latestGame_;
     }
-    delete server_;
 }
 
 void EventHandler::addClient(SOCKET client)
@@ -201,7 +199,7 @@ bool EventHandler::sendEvent(Event &event)
     parameters parameters = event.getParameters();
     SOCKET client = event.getClient();
     message msg = command + " " + utils::join(parameters);
-    server_->sendToClient(client, msg);
+    sendToClient(client, msg);
     return true;
 }
 
@@ -285,3 +283,5 @@ std::vector<SOCKET> EventHandler::getClientsByGame(Game *game)
 {
     return clientsByGame_.at(game);
 }
+
+
