@@ -1,5 +1,7 @@
 #include "server.h"
 
+// PUBLIC
+
 Server::Server(const std::string& port)
 {
 
@@ -70,6 +72,10 @@ Server::~Server()
     WSACleanup();
 }
 
+
+
+// PROTECTED
+
 bool Server::sendToClient(SOCKET &client, const std::string & msg)
 {
     if(hasClient(client)){
@@ -95,9 +101,9 @@ bool Server::broadcast(const std::string& msg)
     return !failed;
 }
 
-//
+
+
 // PRIVATE
-//
 
 bool Server::addClient(SOCKET client)
 {

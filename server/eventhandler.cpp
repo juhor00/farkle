@@ -1,6 +1,8 @@
 #include "eventhandler.h"
 #include "server.h"
 
+// PUBLIC
+
 EventHandler::EventHandler():
     latestGame_(new Game(this)),
     clientsByGame_({}),
@@ -17,52 +19,6 @@ EventHandler::~EventHandler()
     if(latestGame_ != nullptr){
         delete latestGame_;
     }
-}
-
-void EventHandler::addClient(SOCKET client)
-{
-    //
-    // ONLY FOR TESTING
-    if(client == testClient_){
-        return;
-    }
-    // ONLY FOR TESTING
-    //
-
-    if(hasClient(client)){
-        return;
-    }
-    clients_.insert(client);
-
-    // Add to latest game's client list
-    auto clients = getClientsByGame(latestGame_);
-    clients.push_back(client);
-    clientsByGame_.at(latestGame_) = clients;
-
-    // Start game and create new
-    if(clients.size() == 2){
-        latestGame_->start();
-        createNewGame();
-    }
-}
-
-void EventHandler::removeClient(SOCKET client)
-{
-    if(not hasClient(client)){
-        return;
-    }
-    // Find list of clients of the game where client is
-    Game* game = getGameByClient(client);
-    std::vector<SOCKET> clients = getClientsByGame(game);
-    clients.erase(std::find(clients.begin(), clients.end(), client));
-    clientsByGame_.at(game) = clients;
-    clients_.erase(client);
-
-    if(clients.empty() and clientsByGame_.size() > 1){
-        clientsByGame_.erase(game);
-        delete game;
-    }
-
 }
 
 bool EventHandler::handleEvent(Event &event)
@@ -149,6 +105,59 @@ void EventHandler::createOverEvent(Game* game)
     broadcast(clients, event);
 }
 
+
+
+// PROTECTED
+
+void EventHandler::addClient(SOCKET client)
+{
+    //
+    // ONLY FOR TESTING
+    if(client == testClient_){
+        return;
+    }
+    // ONLY FOR TESTING
+    //
+
+    if(hasClient(client)){
+        return;
+    }
+    clients_.insert(client);
+
+    // Add to latest game's client list
+    auto clients = getClientsByGame(latestGame_);
+    clients.push_back(client);
+    clientsByGame_.at(latestGame_) = clients;
+
+    // Start game and create new
+    if(clients.size() == 2){
+        latestGame_->start();
+        createNewGame();
+    }
+}
+
+void EventHandler::removeClient(SOCKET client)
+{
+    if(not hasClient(client)){
+        return;
+    }
+    // Find list of clients of the game where client is
+    Game* game = getGameByClient(client);
+    std::vector<SOCKET> clients = getClientsByGame(game);
+    clients.erase(std::find(clients.begin(), clients.end(), client));
+    clientsByGame_.at(game) = clients;
+    clients_.erase(client);
+
+    if(clients.empty() and clientsByGame_.size() > 1){
+        clientsByGame_.erase(game);
+        delete game;
+    }
+
+}
+
+
+
+// PRIVATE
 
 void EventHandler::holdEvent(SOCKET client, parameters &params)
 {

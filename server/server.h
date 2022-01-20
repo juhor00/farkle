@@ -30,6 +30,8 @@ public:
     Server(const std::string& port = "27015");
     ~Server();
 
+protected:
+
     bool sendToClient(SOCKET& client, const std::string& msg) override;
     bool broadcast(const std::string& msg) override;
 
