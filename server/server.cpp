@@ -1,7 +1,6 @@
 #include "server.h"
 
-Server::Server(const std::string& port):
-    eventHandler(new EventHandler(this))
+Server::Server(const std::string& port)
 {
 
     WSADATA wsaData;
@@ -69,7 +68,6 @@ Server::~Server()
     }
     closesocket(ListenSocket);
     WSACleanup();
-    delete eventHandler;
 }
 
 bool Server::sendToClient(SOCKET &client, const std::string & msg)
@@ -107,7 +105,7 @@ bool Server::addClient(SOCKET client)
         return false;
     }
     ClientSockets.insert(client);
-    eventHandler->addClient(client);
+    EventHandler::addClient(client);
     std::thread t (&Server::handle, this, client);
     t.detach();
     return true;
@@ -117,7 +115,7 @@ bool Server::removeClient(SOCKET &client)
 {
     int iResult;
     if(hasClient(client)){
-        eventHandler->removeClient(client);
+        EventHandler::removeClient(client);
         iResult = shutdown(client, SD_BOTH);
         if(iResult == SOCKET_ERROR){
 
@@ -177,7 +175,7 @@ void Server::handle(SOCKET client)
             message message(recvbuf);
             message = message.substr(0, bytes);
             Event event(client, message);
-            eventHandler->handleEvent(event);
+            EventHandler::handleEvent(event);
 
         } else if(bytes == 0){
             std::cout << "Connection closing with " << client << std::endl;
