@@ -9,8 +9,6 @@
 #include <vector>
 
 using message = std::string;
-
-class Server;
 class EventHandler;
 
 typedef void (EventHandler::*handler)(SOCKET, parameters&);
@@ -19,11 +17,9 @@ class EventHandler
 {
 public:
 
-    EventHandler(Server* server);
-    ~EventHandler();
+    EventHandler();
+    virtual ~EventHandler();
 
-    void addClient(SOCKET client);
-    void removeClient(SOCKET client);
     bool handleEvent(Event& event);
 
     // Create events
@@ -31,6 +27,12 @@ public:
     void createBustEvent(Game* game, player player);
     void createTurnEvent(Game* game, player player);
     void createOverEvent(Game* game);
+
+protected:
+    void addClient(SOCKET client);
+    void removeClient(SOCKET client);
+    virtual bool sendToClient(SOCKET& client, const std::string& msg) = 0;
+    virtual bool broadcast(const std::string& msg) = 0;
 
 
 private:
@@ -59,7 +61,6 @@ private:
     std::vector<SOCKET> getClientsByGame(Game* game);
 
     // Attributes
-    Server* server_;
     Game* latestGame_;
     std::unordered_map<Game*, std::vector<SOCKET>> clientsByGame_;
     SOCKET testClient_;
