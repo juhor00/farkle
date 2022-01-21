@@ -23,7 +23,7 @@ class Client
 {
 public:
     Client();
-    ~Client();
+    virtual ~Client();
     bool isConnected();
     bool sendToServer(const std::string& sendbuf);
     void receive();
