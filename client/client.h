@@ -1,5 +1,5 @@
-#ifndef SERVER_H
-#define SERVER_H
+#ifndef CLIENT_H
+#define CLIENT_H
 
 #define WIN32_LEAN_AND_MEAN
 
@@ -17,24 +17,27 @@
 
 struct addrinfo;
 
-class EventHandler;
+class Event;
 
-class Server
+class Client
 {
 public:
-    Server(EventHandler* eventHandler, const std::string serverName, const std::string port);
-    ~Server();
+    Client();
+    virtual ~Client();
     bool isConnected();
     bool sendToServer(const std::string& sendbuf);
     void receive();
 
+protected:
+    virtual void noConnectionEvent() = 0;
+    virtual bool handleEvent(Event& event) = 0;
+
 private:
 
-    EventHandler* eventHandler_;
     SOCKET ConnectSocket_ = INVALID_SOCKET;
     char recvbuf_[DEFAULT_BUFLEN];
     int recvbuflen_ = DEFAULT_BUFLEN;
     std::thread* recvThread_;
 };
 
-#endif // SERVER_H
+#endif // CLIENT_H

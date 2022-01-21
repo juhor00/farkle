@@ -3,7 +3,7 @@
 
 
 #include "../event.h"
-#include "server.h"
+#include "client.h"
 #include <unordered_map>
 #include <unordered_set>
 
@@ -19,7 +19,7 @@ typedef void (EventHandler::*generator)(parameters&);
 
 class MainWindow;
 
-class EventHandler
+class EventHandler : public Client
 {
 public:
 
@@ -34,9 +34,11 @@ public:
     void createHoldEvent(dice dice);
     void createClickEvent(dice dice);
 
+protected:
+
     // General event handlers
-    void noConnectionEvent();
-    bool handleEvent(Event& event);
+    void noConnectionEvent() override;
+    bool handleEvent(Event& event) override;
 
 
 
@@ -56,7 +58,7 @@ private:
     bool isHandler(command& command);
     bool isGenerator(command& command);
 
-    Server* server;
+    Client* server;
     std::string address_;
     std::string port_;
     MainWindow* mainWindow;
