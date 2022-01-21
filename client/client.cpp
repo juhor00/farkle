@@ -1,9 +1,22 @@
-#include "server.h"
+#include "client.h"
 #include "eventhandler.h"
 
-Server::Server(EventHandler* eventHandler, const std::string serverName, const std::string port):
-    eventHandler_(eventHandler)
+Client::Client()
 {
+
+    // Network settings
+    std::string settingsFile = "networkConfig.txt";
+    auto settings = utils::settingsParser(settingsFile);
+
+    if(not utils::verifySettings(settings)){
+        std::cerr << "File " << settingsFile << " is invalid" << std::endl;
+        // INVALID NETWORK SETTINGS, DO SOMETHING
+        return;
+    }
+    auto address = settings.at("ip-address");
+    auto port = settings.at("port");
+
+
     WSADATA wsaData;
 
     struct addrinfo *result = NULL,
@@ -25,7 +38,7 @@ Server::Server(EventHandler* eventHandler, const std::string serverName, const s
     hints.ai_protocol = IPPROTO_TCP;
 
     // Resolve the server address and port
-    iResult = getaddrinfo(&serverName[0], &port[0], &hints, &result);
+    iResult = getaddrinfo(&address[0], &port[0], &hints, &result);
     if ( iResult != 0 ) {
         std::cerr << "getaddrinfo failed with error: " << iResult << std::endl;
         WSACleanup();
@@ -55,12 +68,12 @@ Server::Server(EventHandler* eventHandler, const std::string serverName, const s
     freeaddrinfo(result);
 
     std::cout << "Connected to the server" << std::endl;
-    recvThread_ = new std::thread(&Server::receive, this);
+    recvThread_ = new std::thread(&Client::receive, this);
     sendToServer("HOLD 1 4 5");
 
 }
 
-Server::~Server()
+Client::~Client()
 {
     // shutdown the connection since no more data will be sent
     std::cout << "Closing connection to the server" << std::endl;
@@ -75,12 +88,12 @@ Server::~Server()
     WSACleanup();
 }
 
-bool Server::isConnected()
+bool Client::isConnected()
 {
     return ConnectSocket_ != INVALID_SOCKET;
 }
 
-bool Server::sendToServer(const std::string& sendbuf)
+bool Client::sendToServer(const std::string& sendbuf)
 {
     int result = send(ConnectSocket_, &sendbuf[0], (int) size(sendbuf), 0);
     if(result == SOCKET_ERROR){
@@ -91,7 +104,7 @@ bool Server::sendToServer(const std::string& sendbuf)
     return true;
 }
 
-void Server::receive()
+void Client::receive()
 {
     int iResult;
     do {
@@ -102,14 +115,14 @@ void Server::receive()
             message message(recvbuf_);
             message = message.substr(0, iResult);
             Event event(message);
-            eventHandler_->handleEvent(event);
+            handleEvent(event);
 
         } else if ( iResult == 0 ){
             std::cout << "Connection closed" << std::endl;
         } else {
             std::cerr << "recv failed with error: " << WSAGetLastError() << std::endl;
             ConnectSocket_ = INVALID_SOCKET;
-            eventHandler_->noConnectionEvent();
+            noConnectionEvent();
         }
 
     } while( iResult > 0 );

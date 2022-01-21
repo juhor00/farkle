@@ -12,18 +12,18 @@ SOURCES += \
     ../event.cpp \
     ../utilities.cpp \
     ./gui/dice.cpp \
+    client.cpp \
     eventhandler.cpp \
     main.cpp \
-    ./gui/mainwindow.cpp \
-    server.cpp
+    ./gui/mainwindow.cpp
 
 HEADERS += \
     ../event.h \
     ../utilities.h \
     ./gui/dice.h \
+    client.h \
     eventhandler.h \
-    ./gui/mainwindow.h \
-    server.h
+    ./gui/mainwindow.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
