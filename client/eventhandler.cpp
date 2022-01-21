@@ -32,19 +32,8 @@ playerScore paramsToPlayerScores(parameters &params)
 EventHandler::EventHandler(MainWindow* m):
     mainWindow(m)
 {
-    // Network settings
-    std::string settingsFile = "networkConfig.txt";
-    auto settings = utils::settingsParser(settingsFile);
 
-    if(not utils::verifySettings(settings)){
-        std::cerr << "File " << settingsFile << " is invalid" << std::endl;
-        // INVALID NETWORK SETTINGS, DO SOMETHING
-    }
-    address_ = settings.at("ip-address");
-    port_ = settings.at("port");
-
-    server = new Server(this, address_, port_);
-    if(not server->isConnected()){
+    if(not isConnected()){
         mainWindow->onNoServerConnection();
     } else {
         mainWindow->onDisplayGame();
@@ -53,14 +42,13 @@ EventHandler::EventHandler(MainWindow* m):
 
 EventHandler::~EventHandler()
 {
-    delete server;
+
 }
 
 void EventHandler::retryConnection()
 {
     if(not server->isConnected()){
-        delete server;
-        server = new Server(this, address_, port_);
+        // REIMPLEMENT RETRY
     }
     if(server->isConnected()){
         mainWindow->onDisplayGame();
