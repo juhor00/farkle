@@ -17,31 +17,34 @@
 #include <memory>
 #include <thread>
 #include <string>
+#include <algorithm>
 
 #include "../event.h"
-#include "eventhandler.h"
 
 #define DEFAULT_BUFLEN 512
 
 
-class Server : public EventHandler
+class Server
 {
 public:
     Server(const std::string& port = "27015");
-    ~Server();
+    virtual ~Server();
 
 protected:
 
-    bool sendToClient(SOCKET& client, const std::string& msg) override;
-    bool broadcast(const std::string& msg) override;
+    bool sendToClient(SOCKET& client, const std::string& msg);
+    bool broadcast(const std::string& msg);
+    void acceptClients();
+
+    virtual bool handleEvent(Event& event)=0;
+    virtual bool addClient(SOCKET client);
+    virtual bool removeClient(SOCKET client);
 
 private:
 
-    bool addClient(SOCKET client);
-    bool removeClient(SOCKET& client);
+    void closeConnection(SOCKET client);
     bool hasClient(SOCKET& client);
 
-    void acceptClients();
     void stopListen();
     void handle(SOCKET client);
 
