@@ -1,5 +1,4 @@
 #include "eventhandler.h"
-#include "server.h"
 
 // PUBLIC
 
@@ -9,6 +8,7 @@ EventHandler::EventHandler():
     testClient_(INVALID_SOCKET)
 {
     clientsByGame_.insert({latestGame_, {}});
+    acceptClients();
 }
 
 EventHandler::~EventHandler()
@@ -109,18 +109,21 @@ void EventHandler::createOverEvent(Game* game)
 
 // PROTECTED
 
-void EventHandler::addClient(SOCKET client)
+bool EventHandler::addClient(SOCKET client)
 {
+    if(!Server::addClient(client)){
+        return false;
+    }
     //
     // ONLY FOR TESTING
     if(client == testClient_){
-        return;
+        return true;
     }
     // ONLY FOR TESTING
     //
 
     if(hasClient(client)){
-        return;
+        return true;
     }
     clients_.insert(client);
 
@@ -134,12 +137,16 @@ void EventHandler::addClient(SOCKET client)
         latestGame_->start();
         createNewGame();
     }
+    return true;
 }
 
-void EventHandler::removeClient(SOCKET client)
+bool EventHandler::removeClient(SOCKET client)
 {
+    if(not Server::removeClient(client)){
+        return false;
+    }
     if(not hasClient(client)){
-        return;
+        return false;
     }
     // Find list of clients of the game where client is
     Game* game = getGameByClient(client);
@@ -152,6 +159,7 @@ void EventHandler::removeClient(SOCKET client)
         clientsByGame_.erase(game);
         delete game;
     }
+    return true;
 
 }
 

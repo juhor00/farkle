@@ -3,6 +3,7 @@
 
 #include "../event.h"
 #include "game/game.h"
+#include "server.h"
 #include <unordered_map>
 #include <unordered_set>
 #include <algorithm>
@@ -13,14 +14,12 @@ class EventHandler;
 
 typedef void (EventHandler::*handler)(SOCKET, parameters&);
 
-class EventHandler
+class EventHandler : protected Server
 {
 public:
 
     EventHandler();
-    virtual ~EventHandler();
-
-    bool handleEvent(Event& event);
+    ~EventHandler();
 
     // Create events
     void createShowEvent(Game* game, diceValues diceValues);
@@ -29,10 +28,10 @@ public:
     void createOverEvent(Game* game);
 
 protected:
-    void addClient(SOCKET client);
-    void removeClient(SOCKET client);
-    virtual bool sendToClient(SOCKET& client, const std::string& msg) = 0;
-    virtual bool broadcast(const std::string& msg) = 0;
+
+    bool handleEvent(Event& event) override;
+    bool addClient(SOCKET client) override;
+    bool removeClient(SOCKET client) override;
 
 
 private:
