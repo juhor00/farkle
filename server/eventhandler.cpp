@@ -21,45 +21,6 @@ EventHandler::~EventHandler()
     }
 }
 
-bool EventHandler::handleEvent(Event &event)
-{
-    event.print();
-    SOCKET client = event.getClient();
-    command command = event.getCommand();
-    parameters parameters = event.getParameters();
-
-    //
-    // TESTING BEGIN
-    //
-
-    // Receive from test client
-    if(client == testClient_){
-        // Pass command to others
-        testBroadcast(event);
-        return true;
-    }
-
-    // Send to test client
-    if(testClient_ != INVALID_SOCKET){
-        std::cout << "sending to test client" << std::endl;
-        event.setClient(testClient_);
-        sendEvent(event);
-    }
-
-    //
-    // TESTING END
-    //
-
-    if(not isHandler(command)){
-        return false;
-    }
-
-    // Handle normally
-    handler handler = handlers_.at(command);
-    (this->*handler)(client, parameters);
-    return true;
-}
-
 void EventHandler::createShowEvent(Game* game, diceValues diceValues)
 {
     auto clients = getClientsByGame(game);
@@ -108,6 +69,45 @@ void EventHandler::createOverEvent(Game* game)
 
 
 // PROTECTED
+
+bool EventHandler::handleEvent(Event &event)
+{
+    event.print();
+    SOCKET client = event.getClient();
+    command command = event.getCommand();
+    parameters parameters = event.getParameters();
+
+    //
+    // TESTING BEGIN
+    //
+
+    // Receive from test client
+    if(client == testClient_){
+        // Pass command to others
+        testBroadcast(event);
+        return true;
+    }
+
+    // Send to test client
+    if(testClient_ != INVALID_SOCKET){
+        std::cout << "sending to test client" << std::endl;
+        event.setClient(testClient_);
+        sendEvent(event);
+    }
+
+    //
+    // TESTING END
+    //
+
+    if(not isHandler(command)){
+        return false;
+    }
+
+    // Handle normally
+    handler handler = handlers_.at(command);
+    (this->*handler)(client, parameters);
+    return true;
+}
 
 bool EventHandler::addClient(SOCKET client)
 {

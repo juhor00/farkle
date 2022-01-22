@@ -100,6 +100,31 @@ bool Server::broadcast(const std::string& msg)
     return !failed;
 }
 
+void Server::acceptClients()
+{
+    while(true){
+
+        SOCKET ClientSocket = accept(ListenSocket, NULL, NULL);
+        if (ClientSocket == INVALID_SOCKET) {
+            std::cerr << "Accept failed with error: " << WSAGetLastError() << std::endl;
+            continue;
+        } else if (hasClient(ClientSocket)){
+            std::cout << "Duplicate client " << ClientSocket << std::endl;
+            continue;
+        } else {
+            addClient(ClientSocket);
+            // New successful connection
+            std::cout << "Added new client " << ClientSocket << std::endl;
+
+            //
+            // Join message here
+            //
+            sendToClient(ClientSocket, "Hello player!");
+
+        }
+    }
+}
+
 
 
 // PRIVATE
@@ -142,31 +167,6 @@ void Server::closeConnection(SOCKET client)
 bool Server::hasClient(SOCKET &client)
 {
     return (std::find(ClientSockets.begin(), ClientSockets.end(), client) != ClientSockets.end());
-}
-
-void Server::acceptClients()
-{
-    while(true){
-
-        SOCKET ClientSocket = accept(ListenSocket, NULL, NULL);
-        if (ClientSocket == INVALID_SOCKET) {
-            std::cerr << "Accept failed with error: " << WSAGetLastError() << std::endl;
-            continue;
-        } else if (hasClient(ClientSocket)){
-            std::cout << "Duplicate client " << ClientSocket << std::endl;
-            continue;
-        } else {
-            addClient(ClientSocket);
-            // New successful connection
-            std::cout << "Added new client " << ClientSocket << std::endl;
-
-            //
-            // Join message here
-            //
-            sendToClient(ClientSocket, "Hello player!");
-
-        }
-    }
 }
 
 void Server::stopListen()
