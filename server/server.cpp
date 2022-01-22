@@ -59,14 +59,13 @@ Server::Server(const std::string& port)
         return;
     }
     std::cout << "Server started successfully" << std::endl;
-    acceptClients();
 }
 
 Server::~Server()
 {
     // Close sockets
     for(SOCKET ClientSocket : ClientSockets){
-        removeClient(ClientSocket);
+        closeConnection(ClientSocket);
     }
     closesocket(ListenSocket);
     WSACleanup();
@@ -101,46 +100,6 @@ bool Server::broadcast(const std::string& msg)
     return !failed;
 }
 
-
-
-// PRIVATE
-
-bool Server::addClient(SOCKET client)
-{
-    if(hasClient(client)){
-        return false;
-    }
-    ClientSockets.insert(client);
-    EventHandler::addClient(client);
-    std::thread t (&Server::handle, this, client);
-    t.detach();
-    return true;
-}
-
-bool Server::removeClient(SOCKET &client)
-{
-    int iResult;
-    if(hasClient(client)){
-        EventHandler::removeClient(client);
-        iResult = shutdown(client, SD_BOTH);
-        if(iResult == SOCKET_ERROR){
-
-            std::cerr << "Shutdown failed with error " << WSAGetLastError() << std::endl;
-            closesocket(client);
-        }
-        ClientSockets.erase(client);
-        std::cout << "Client " << client << " closed connection" << std::endl;
-        return true;
-    }
-    return false;
-
-}
-
-bool Server::hasClient(SOCKET &client)
-{
-    return (std::find(ClientSockets.begin(), ClientSockets.end(), client) != ClientSockets.end());
-}
-
 void Server::acceptClients()
 {
     while(true){
@@ -166,6 +125,50 @@ void Server::acceptClients()
     }
 }
 
+
+
+// PRIVATE
+
+bool Server::addClient(SOCKET client)
+{
+    if(hasClient(client)){
+        return false;
+    }
+    ClientSockets.insert(client);
+    std::thread t (&Server::handle, this, client);
+    t.detach();
+    return true;
+
+}
+
+bool Server::removeClient(SOCKET client)
+{
+    if(hasClient(client)){
+        closeConnection(client);
+        return true;
+    }
+    return false;
+
+}
+
+void Server::closeConnection(SOCKET client)
+{
+    int iResult;
+    iResult = shutdown(client, SD_BOTH);
+    if(iResult == SOCKET_ERROR){
+
+        std::cerr << "Shutdown failed with error " << WSAGetLastError() << std::endl;
+        closesocket(client);
+    }
+    ClientSockets.erase(client);
+    std::cout << "Closed connection with " << client << std::endl;
+}
+
+bool Server::hasClient(SOCKET &client)
+{
+    return (std::find(ClientSockets.begin(), ClientSockets.end(), client) != ClientSockets.end());
+}
+
 void Server::stopListen()
 {
     closesocket(ListenSocket);
@@ -181,7 +184,7 @@ void Server::handle(SOCKET client)
             message message(recvbuf);
             message = message.substr(0, bytes);
             Event event(client, message);
-            EventHandler::handleEvent(event);
+            handleEvent(event);
 
         } else if(bytes == 0){
             std::cout << "Connection closing with " << client << std::endl;
