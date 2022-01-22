@@ -1,5 +1,5 @@
 #include <iostream>
-#include "server.h"
+#include "eventhandler.h"
 
 using namespace std;
 
@@ -7,7 +7,7 @@ using namespace std;
 
 int main()
 {
-    Server server;
+    EventHandler e;
 
 
     return EXIT_SUCCESS;
