@@ -154,7 +154,7 @@ void MainWindow::drawGUI()
                               diceRowY.at(row),
                               diceSize,
                               diceSize);
-
+            // https://www.youtube.com/watch?v=dQw4w9WgXcQ
             if(not dice->pixmap().isNull()){
                 QPixmap pic = diceImages.at(dice->getValue());
                 dice->setPixmap(pic.scaledToWidth(diceSize));
